@@ -22,6 +22,15 @@ export default function Home() {
   const autoplayTimer = useRef(null);
   
   const recipeScrollRef = useRef(null);
+  const [activeRecipeIndex, setActiveRecipeIndex] = useState(0);
+
+  const handleRecipeScroll = useCallback((e) => {
+    const { scrollLeft, clientWidth } = e.currentTarget;
+    if (clientWidth > 0) {
+      const index = Math.round(scrollLeft / clientWidth);
+      setActiveRecipeIndex(index);
+    }
+  }, []);
 
   const scrollRecipes = useCallback((direction) => {
     if (recipeScrollRef.current) {
@@ -499,6 +508,7 @@ export default function Home() {
           {/* Recipes Carousel Viewport */}
           <div
             ref={recipeScrollRef}
+            onScroll={handleRecipeScroll}
             className="no-scrollbar flex overflow-x-auto gap-0 scroll-smooth snap-x snap-mandatory pb-6 w-full max-w-[300px] sm:max-w-[340px] md:max-w-4xl mx-auto"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
@@ -506,6 +516,37 @@ export default function Home() {
               const words = recipe.title.split(" ");
               const firstWord = words[0].toUpperCase();
               const restOfTitle = words.slice(1).join(" ").toLowerCase();
+              const isActive = activeRecipeIndex === i;
+
+              // Letter-by-letter stagger variants
+              const containerVariants = {
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.04, delayChildren: 0.05 },
+                },
+              };
+
+              const childVariants = {
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  transition: {
+                    type: "spring",
+                    damping: 12,
+                    stiffness: 150,
+                  },
+                },
+                hidden: {
+                  opacity: 0,
+                  y: 15,
+                  transition: {
+                    type: "spring",
+                    damping: 12,
+                    stiffness: 150,
+                  },
+                },
+              };
 
               return (
                 <div
@@ -515,12 +556,30 @@ export default function Home() {
                   <div className="w-full flex flex-col md:flex-row items-center justify-between text-center md:text-left space-y-6 md:space-y-0 md:h-[240px] md:px-4">
                     {/* Title Wrapper (Col 1: Left) */}
                     <div className="space-y-1 md:w-1/3 flex flex-col items-center md:items-start shrink-0">
-                      <h3 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight leading-none text-white font-sans">
-                        {firstWord}
-                      </h3>
-                      <span className="text-xs md:text-sm font-bold uppercase tracking-widest text-sky-300/80 block">
+                      <motion.h3 
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate={isActive ? "visible" : "hidden"}
+                        className="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight leading-none text-white font-sans flex flex-wrap justify-center md:justify-start gap-x-[1px]"
+                      >
+                        {firstWord.split("").map((letter, index) => (
+                          <motion.span 
+                            key={index} 
+                            variants={childVariants} 
+                            className="inline-block origin-bottom"
+                          >
+                            {letter}
+                          </motion.span>
+                        ))}
+                      </motion.h3>
+                      <motion.span 
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={isActive ? { opacity: 0.8, y: 0 } : { opacity: 0, y: 5 }}
+                        transition={{ duration: 0.4, delay: 0.15 }}
+                        className="text-xs md:text-sm font-bold uppercase tracking-widest text-sky-300/80 block mt-1"
+                      >
                         {restOfTitle}
-                      </span>
+                      </motion.span>
                     </div>
 
                     {/* Transparent Recipe Image (Col 2: Center) */}
