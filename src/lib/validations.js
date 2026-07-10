@@ -33,3 +33,12 @@ export const contactSchema = z.object({
   email: z.string().email("Informe um e-mail valido."),
   message: z.string().min(10, "Conte um pouco mais sobre o contato."),
 });
+
+export const highlightSchema = z.object({
+  titleLeft: z.string().min(2, "Informe o título esquerdo."),
+  subtitleLeft: z.string().min(2, "Informe o subtítulo esquerdo."),
+  textRight: z.string().min(2, "Informe o texto de destaque direito."),
+  badge: z.string().min(2, "Informe o texto da tag."),
+  image: z.string().url("Use uma URL válida.").optional().or(z.literal("")),
+  imageFile: z.any().optional(),
+});

@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Bike } from "lucide-react";
+import { getCategoryStyle } from "@/interfaces/catalog";
 
-export default function ProductCarousel({ children }) {
+export default function ProductCarousel({ children, category }) {
+  const style = getCategoryStyle(category);
   const scrollRef = useRef(null);
   const [showLeft, setShowLeft] = useState(false);
   const [showRight, setShowRight] = useState(false);
@@ -95,28 +97,17 @@ export default function ProductCarousel({ children }) {
   };
 
   return (
-    <div className="relative group w-full">
+    <div className="relative group w-full flex flex-col items-center">
       <style>{`
         .no-scrollbar::-webkit-scrollbar {
           display: none;
         }
       `}</style>
       
-      {/* Arrow Left */}
-      {showLeft && (
-        <button
-          onClick={() => scroll("left")}
-          className="absolute left-[-16px] top-[50%] -translate-y-1/2 z-20 flex h-12 w-12 items-center justify-center rounded-full border border-gray-100 bg-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] text-[#2d2d8e] transition-all hover:bg-[#2d2d8e] hover:text-white hover:scale-105 active:scale-95 cursor-pointer"
-          aria-label="Scroll left"
-        >
-          <ChevronLeft size={24} className="stroke-[2.5]" />
-        </button>
-      )}
-
       {/* Carousel Viewport */}
       <div
         ref={scrollRef}
-        className="no-scrollbar flex overflow-x-auto gap-6 scroll-smooth snap-x snap-mandatory py-6 px-4 items-center"
+        className="no-scrollbar flex overflow-x-auto gap-4 sm:gap-6 scroll-smooth snap-x snap-mandatory pt-20 pb-6 px-10 sm:px-6 items-center w-full"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {React.Children.map(children, (child, index) => {
@@ -126,8 +117,8 @@ export default function ProductCarousel({ children }) {
               key={index}
               className={`transition-all duration-500 ease-out transform ${
                 isCenter 
-                  ? "scale-[1.03] opacity-100 z-10" 
-                  : "scale-[0.93] opacity-70"
+                  ? "scale-[1.03] -translate-y-12 opacity-100 z-10" 
+                  : "scale-[0.93] translate-y-3 opacity-70"
               } flex shrink-0`}
             >
               {child}
@@ -136,16 +127,28 @@ export default function ProductCarousel({ children }) {
         })}
       </div>
 
-      {/* Arrow Right */}
-      {showRight && (
+      {/* Bottom Controls (setas + bicicleta) */}
+      <div className="flex items-center justify-center gap-6 -mt-7 mb-2 select-none z-20">
+        <button
+          onClick={() => scroll("left")}
+          className={`p-2 transition-all hover:scale-110 active:scale-90 cursor-pointer ${style.text}`}
+          aria-label="Anterior"
+        >
+          <ChevronLeft size={36} className="stroke-[3]" />
+        </button>
+
+        <div className="text-[#1a1a4e] transition-transform hover:scale-110 duration-300">
+          <Bike size={36} className="stroke-[1.8]" />
+        </div>
+
         <button
           onClick={() => scroll("right")}
-          className="absolute right-[-16px] top-[50%] -translate-y-1/2 z-20 flex h-12 w-12 items-center justify-center rounded-full border border-gray-100 bg-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] text-[#2d2d8e] transition-all hover:bg-[#2d2d8e] hover:text-white hover:scale-105 active:scale-95 cursor-pointer"
-          aria-label="Scroll right"
+          className={`p-2 transition-all hover:scale-110 active:scale-90 cursor-pointer ${style.text}`}
+          aria-label="Próximo"
         >
-          <ChevronRight size={24} className="stroke-[2.5]" />
+          <ChevronRight size={36} className="stroke-[3]" />
         </button>
-      )}
+      </div>
     </div>
   );
 }

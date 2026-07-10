@@ -4,9 +4,12 @@ import Image from "next/image";
 import { useState } from "react";
 import { X, MessageCircle } from "lucide-react";
 import { createPortal } from "react-dom";
+import { getCategoryStyle } from "@/interfaces/catalog";
+import { cn } from "@/lib/utils";
 
 export default function ProductCard({ product }) {
   const [showModal, setShowModal] = useState(false);
+  const style = getCategoryStyle(product.category);
 
   const handleWhatsAppContact = () => {
     const text = encodeURIComponent(
@@ -17,36 +20,47 @@ export default function ProductCard({ product }) {
 
   return (
     <>
-      <article className="group relative flex h-full w-full flex-col items-center justify-between overflow-hidden rounded-[16px] border border-gray-100 bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.015)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_10px_28px_rgba(0,0,0,0.04)]">
-        {/* Image Container */}
-        <div className="relative aspect-square w-full overflow-hidden rounded-[12px] bg-gray-50/50 flex items-center justify-center p-3 mb-4 group-hover:scale-[1.01] transition-transform duration-300">
-          <Image
-            src={product.image || "/logo.png"}
-            alt={product.name}
-            fill
-            sizes="(max-width: 768px) 100vw, 350px"
-            className="object-contain"
-          />
+      <article className="group relative w-full h-[395px] select-none filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.06)] hover:drop-shadow-[0_12px_24px_rgba(0,0,0,0.12)] transition-all duration-300 hover:-translate-y-1.5">
+        {/* Main Card Body (Rounded top and bottom, but right side is shorter) */}
+        <div className={cn(
+          "absolute top-0 left-0 w-full h-[96%] rounded-[24px] p-4 sm:p-5 pb-10 flex flex-col justify-between overflow-hidden",
+          style.cardBg
+        )}>
+          {/* Transparent Image Container */}
+          <div className="relative aspect-square w-[calc(100%+32px)] -mx-4 sm:w-[calc(100%+40px)] sm:-mx-5 flex items-center justify-center mb-2 group-hover:scale-[1.12] transition-transform duration-300">
+            <Image
+              src={product.image || "/logo.png"}
+              alt={product.name}
+              fill
+              sizes="(max-width: 768px) 100vw, 350px"
+              className="object-contain"
+            />
+          </div>
+
+          {/* Text Details (Pushed slightly up to prevent overlap with the tab) */}
+          <div className="flex flex-col items-start text-left w-full pb-8">
+            <span className="text-xs font-bold text-white/80 uppercase tracking-wide mb-1">
+              {product.price || "Consulte"}
+            </span>
+            <h3 className="text-[17px] font-extrabold text-white leading-snug line-clamp-2 min-h-[48px]">
+              {product.name}
+            </h3>
+          </div>
         </div>
 
-        {/* Text Details */}
-        <div className="flex flex-col items-center text-center w-full flex-1">
-          <h3 className="text-[16px] font-bold text-[#1a1a4e] leading-snug line-clamp-2 min-h-[48px] mb-1">
-            {product.name}
-          </h3>
-          <span className="text-xs font-semibold text-gray-400 mb-4 block">
-            {product.price || "Consulte"}
-          </span>
+        {/* Tab Extension on the bottom left (Holds the button) */}
+        <div className={cn(
+          "absolute bottom-0 left-0 w-[70%] h-[12%] rounded-b-[24px] flex items-center justify-center p-2 pb-2.5",
+          style.cardBg
+        )}>
+          <button
+            type="button"
+            onClick={() => setShowModal(true)}
+            className="w-full h-8 flex items-center justify-center rounded-[10px] bg-[#1a1a4e] hover:bg-[#2d2d8e] text-white font-bold text-[13px] tracking-wide transition-all duration-200 cursor-pointer shadow-sm active:scale-95"
+          >
+            Detalhes
+          </button>
         </div>
-
-        {/* Button - Modern Outline */}
-        <button
-          type="button"
-          onClick={() => setShowModal(true)}
-          className="w-full h-10 flex items-center justify-center rounded-[8px] border border-orange-500 text-orange-500 bg-transparent font-bold text-[13px] tracking-wide hover:bg-orange-500 hover:text-white transition-all duration-200 cursor-pointer"
-        >
-          Detalhes
-        </button>
       </article>
 
       {/* Details Modal using React Portal */}
@@ -82,7 +96,7 @@ export default function ProductCard({ product }) {
             {/* Modal Right Side (Content) */}
             <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-between">
               <div>
-                <span className="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-orange-50 text-orange-600 mb-3">
+                <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 ${getCategoryStyle(product.category).badge}`}>
                   {product.category}
                 </span>
                 <h2 className="text-2xl font-extrabold text-[#1a1a4e] leading-tight mb-2">

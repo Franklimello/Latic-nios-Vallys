@@ -1,16 +1,20 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Clock, CookingPot } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function RecipeCard({ recipe }) {
   return (
-    <article className="grid overflow-hidden rounded-[8px] border border-border bg-white shadow-sm md:grid-cols-[0.85fr_1.15fr]">
+    <Link 
+      href={`/receitas?id=${recipe.id}`}
+      className="grid overflow-hidden rounded-[8px] border border-border bg-white shadow-sm md:grid-cols-[0.85fr_1.15fr] hover:shadow-md transition-shadow cursor-pointer duration-200"
+    >
       <div className="relative aspect-[4/3] overflow-hidden bg-accent/5 md:aspect-auto">
         <Image
           src={recipe.image || "/globe.svg"}
           alt={recipe.title}
           fill
-          sizes="(min-width: 768px) 40vw, 100vw"
+          sizes="(max-width: 768px) 100vw, 350px"
           className="object-cover"
         />
       </div>
@@ -27,7 +31,7 @@ export default function RecipeCard({ recipe }) {
           </span>
         </div>
         <div>
-          <h3 className="text-xl font-semibold">{recipe.title}</h3>
+          <h3 className="text-xl font-semibold text-gray-900 group-hover:text-accent transition-colors">{recipe.title}</h3>
           <p className="mt-2 text-sm leading-6 text-muted">
             {recipe.description}
           </p>
@@ -39,6 +43,6 @@ export default function RecipeCard({ recipe }) {
             : recipe.ingredients}
         </p>
       </div>
-    </article>
+    </Link>
   );
 }

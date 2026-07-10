@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -38,9 +38,31 @@ const FacebookIcon = () => (
 export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 shadow-sm backdrop-blur-md">
+    <header
+      className={cn(
+        "sticky top-0 z-50 transition-all duration-300",
+        open
+          ? "border-b border-gray-100 bg-white shadow-none"
+          : scrolled
+            ? "border-b border-gray-100/50 bg-white/70 shadow-md backdrop-blur-md"
+            : "border-b border-gray-100 bg-white shadow-none"
+      )}
+    >
       {/* Barra superior de cor dupla (Estilo de referência em tons de azul) */}
       <div className="flex h-[6px] w-full">
         <div className="w-[30%] bg-sky-400"></div>
@@ -49,12 +71,15 @@ export default function Header() {
 
       <div className="mx-auto flex h-[76px] md:h-[96px] max-w-7xl items-center justify-between px-6 lg:px-8">
         {/* Logo (Esquerda) */}
-        <div className="flex w-[200px] md:w-[280px] shrink-0 justify-start items-center">
-          <Link href="/" className="relative z-10 block w-[150px] md:w-[220px] h-[52px] md:h-[72px] overflow-hidden">
+        <div className="flex w-[120px] md:w-[180px] shrink-0 justify-start items-start pt-1 md:pt-2 h-full">
+          <Link 
+            href="/" 
+            className="relative z-20 block w-[85px] md:w-[115px] h-[114px] md:h-[154px] animate-tag-swing select-none"
+          >
             <img
-              src="/logo.png"
+              src="/logo-tag.png"
               alt="Logo Vallys"
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] md:w-[480px] h-[340px] md:h-[480px] max-w-none object-contain select-none"
+              className="w-full h-full object-contain"
             />
           </Link>
         </div>
@@ -77,14 +102,11 @@ export default function Header() {
 
         {/* Redes Sociais (Direita) */}
         <div className="hidden items-center justify-end gap-4 md:flex shrink-0">
-          <a href="https://wa.me/5500000000000" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+          <a href="https://wa.me/5533999838182" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
             <WhatsAppIcon />
           </a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <a href="https://www.instagram.com/laticiniosvallys/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
             <InstagramIcon />
-          </a>
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-            <FacebookIcon />
           </a>
         </div>
 
@@ -122,9 +144,8 @@ export default function Header() {
             <div className="flex items-center gap-6 py-4 px-3 border-t border-b border-gray-100 my-2">
               <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">Nossas redes:</span>
               <div className="flex gap-4">
-                <a href="#" aria-label="WhatsApp"><WhatsAppIcon /></a>
-                <a href="#" aria-label="Instagram"><InstagramIcon /></a>
-                <a href="#" aria-label="Facebook"><FacebookIcon /></a>
+                <a href="https://wa.me/5533999838182" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><WhatsAppIcon /></a>
+                <a href="https://www.instagram.com/laticiniosvallys/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><InstagramIcon /></a>
               </div>
             </div>
 

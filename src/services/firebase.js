@@ -19,7 +19,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
-import { demoProducts, demoRecipes } from "@/interfaces/catalog";
+import { demoProducts, demoRecipes, demoHighlights } from "@/interfaces/catalog";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -235,5 +235,49 @@ export async function deleteRecipe(id) {
   }
   const result = await deleteDoc(doc(db, "recipes", id));
   clearStoredCache("vallys_recipes");
+  return result;
+}
+
+export async function getHighlights() {
+  const cached = getStoredCache("vallys_highlights");
+  if (cached) {
+    return cached;
+  }
+  const data = await readCollection("highlights", demoHighlights);
+  setStoredCache("vallys_highlights", data);
+  return data;
+}
+
+export async function createHighlight(highlight) {
+  if (!db) {
+    throw new Error("Configure o Firebase para salvar destaques.");
+  }
+  const result = await addDoc(collection(db, "highlights"), {
+    ...cleanPayload(highlight),
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+  clearStoredCache("vallys_highlights");
+  return result;
+}
+
+export async function updateHighlight(id, highlight) {
+  if (!db) {
+    throw new Error("Configure o Firebase para atualizar destaques.");
+  }
+  const result = await setDoc(doc(db, "highlights", id), {
+    ...cleanPayload(highlight),
+    updatedAt: serverTimestamp(),
+  }, { merge: true });
+  clearStoredCache("vallys_highlights");
+  return result;
+}
+
+export async function deleteHighlight(id) {
+  if (!db) {
+    throw new Error("Configure o Firebase para excluir destaques.");
+  }
+  const result = await deleteDoc(doc(db, "highlights", id));
+  clearStoredCache("vallys_highlights");
   return result;
 }

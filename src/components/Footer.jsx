@@ -28,23 +28,21 @@ export default function Footer() {
         
         {/* Coluna 1: Logo, Descrição e Redes Sociais */}
         <div className="space-y-6">
-          <div className="flex items-center">
-            {/* Logo Vallys em versão com contraste */}
-            <Link href="/" className="relative block w-[160px] h-[52px] overflow-hidden rounded-[8px] bg-white/5 p-1 border border-white/10 hover:border-white/20 transition-colors">
+            {/* Logo Vallys em versão etiqueta */}
+            <Link href="/" className="relative block w-[80px] h-[107px] animate-tag-swing select-none">
               <img
-                src="/logo.png"
+                src="/logo-tag.png"
                 alt="Logo Vallys"
-                className="w-full h-full object-contain select-none scale-125"
+                className="w-full h-full object-contain"
               />
             </Link>
-          </div>
           <p className="max-w-xs text-sm leading-relaxed text-gray-400 font-medium">
             Produtos lácteos de excelência produzidos com rigor técnico, tecnologia de ponta e aquele inconfundível sabor da fazenda direto de Minas Gerais para sua mesa.
           </p>
-          <div className="flex gap-3">
+                 <div className="flex gap-3">
             <a
               className="grid h-10 w-10 place-items-center rounded-xl bg-white/5 border border-white/10 text-gray-400 transition-all hover:bg-white/10 hover:text-white"
-              href="https://instagram.com"
+              href="https://www.instagram.com/laticiniosvallys/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
@@ -53,16 +51,7 @@ export default function Footer() {
             </a>
             <a
               className="grid h-10 w-10 place-items-center rounded-xl bg-white/5 border border-white/10 text-gray-400 transition-all hover:bg-white/10 hover:text-white"
-              href="https://facebook.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook"
-            >
-              <FacebookIcon />
-            </a>
-            <a
-              className="grid h-10 w-10 place-items-center rounded-xl bg-white/5 border border-white/10 text-gray-400 transition-all hover:bg-white/10 hover:text-white"
-              href="https://wa.me/5500000000000"
+              href="https://wa.me/5533999838182"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="WhatsApp"
@@ -75,19 +64,20 @@ export default function Footer() {
         {/* Coluna 2: Navegação */}
         <div className="space-y-4">
           <h3 className="text-base font-bold text-white uppercase tracking-wider">Navegação</h3>
-          <div className="grid gap-3 text-sm font-medium text-gray-400">
+          <div className="grid gap-2 text-sm font-medium text-gray-400">
             <Link href="/" className="hover:text-amber-400 transition-colors">Início</Link>
             <Link href="/produtos" className="hover:text-amber-400 transition-colors">Produtos</Link>
             <Link href="/receitas" className="hover:text-amber-400 transition-colors">Receitas</Link>
-            <Link href="/sobre" className="hover:text-amber-400 transition-colors">Sobre</Link>
+            <Link href="/sobre" className="hover:text-amber-400 transition-colors">Sobre Nós</Link>
             <Link href="/contato" className="hover:text-amber-400 transition-colors">Contato</Link>
           </div>
         </div>
 
-        {/* Coluna 3: Nossas Linhas */}
+        {/* Coluna 3: Linhas */}
         <div className="space-y-4">
           <h3 className="text-base font-bold text-white uppercase tracking-wider">Linhas de Produtos</h3>
-          <div className="grid gap-3 text-sm font-medium text-gray-400">
+          <div className="grid gap-2 text-sm font-medium text-gray-400">
+            <Link href="/produtos?cat=Leites" className="hover:text-amber-400 transition-colors">Linha Leites</Link>
             <Link href="/produtos?cat=Queijos" className="hover:text-amber-400 transition-colors">Linha Queijos</Link>
             <Link href="/produtos?cat=Iogurtes" className="hover:text-amber-400 transition-colors">Linha Iogurtes</Link>
             <Link href="/produtos?cat=Manteigas" className="hover:text-amber-400 transition-colors">Linha Manteigas</Link>
@@ -101,11 +91,15 @@ export default function Footer() {
           <div className="grid gap-4 text-sm font-medium text-gray-400">
             <span className="flex items-start gap-3">
               <Phone size={18} className="text-amber-400 shrink-0 mt-0.5" />
-              <span>(33) 3331-0000</span>
+              <a href="https://wa.me/5533999838182" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                (33) 99983-8182
+              </a>
             </span>
             <span className="flex items-start gap-3">
               <Mail size={18} className="text-amber-400 shrink-0 mt-0.5" />
-              <span>contato@vallys.com.br</span>
+              <a href="mailto:laticiniosvallys08@hotmail.com" className="hover:text-white transition-colors">
+                laticiniosvallys08@hotmail.com
+              </a>
             </span>
             <span className="flex items-start gap-3">
               <MapPin size={18} className="text-amber-400 shrink-0 mt-0.5" />

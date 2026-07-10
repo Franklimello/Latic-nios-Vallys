@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import { Badge } from "@/components/ui/badge";
-import { productCategories } from "@/interfaces/catalog";
+import { productCategories, getCategoryStyle } from "@/interfaces/catalog";
 import { useProducts } from "@/hooks/useProducts";
 import ProductCarousel from "@/components/ProductCarousel";
 
@@ -51,20 +51,23 @@ export default function ProductsPage() {
 
       {/* Filter Buttons */}
       <div className="mb-12 flex flex-wrap justify-center gap-2">
-        {["Todos", ...productCategories].map((item) => (
-          <button
-            key={item}
-            type="button"
-            className={`rounded-full border px-5 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer ${
-              category === item
-                ? "border-orange-500 bg-orange-500 text-white shadow-sm"
-                : "border-gray-200 bg-white text-[#1a1a4e] hover:border-gray-300 hover:bg-gray-50"
-            }`}
-            onClick={() => setCategory(item)}
-          >
-            {item}
-          </button>
-        ))}
+        {["Todos", ...productCategories].map((item) => {
+          const style = getCategoryStyle(item);
+          return (
+            <button
+              key={item}
+              type="button"
+              className={`rounded-full border px-5 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                category === item
+                  ? style.buttonActive
+                  : "border-gray-200 bg-white text-[#1a1a4e] hover:border-gray-300 hover:bg-gray-50"
+              }`}
+              onClick={() => setCategory(item)}
+            >
+              {item}
+            </button>
+          );
+        })}
       </div>
 
       {loading && <p className="text-center text-muted">Carregando catálogo...</p>}
@@ -80,21 +83,22 @@ export default function ProductsPage() {
           {categoriesToRender.map((cat) => {
             const items = productsByCategory[cat] || [];
             if (items.length === 0) return null;
+            const style = getCategoryStyle(cat);
 
             return (
               <div key={cat} className="border-b border-gray-50 pb-8 last:border-0 last:pb-0">
                 {/* Section Title */}
                 <div className="flex flex-col items-center text-center mb-6">
-                  <h3 className="font-caveat text-4xl text-amber-500 font-semibold tracking-wide">
+                  <h3 className={`font-caveat text-4xl font-semibold tracking-wide ${style.textStatic}`}>
                     Linha {cat}
                   </h3>
-                  <div className="w-[100px] h-[1px] bg-gray-200 mt-2"></div>
+                  <div className={`w-[100px] h-[1px] mt-2 ${style.lineStatic}`}></div>
                 </div>
 
                 {/* Carousel wrapper */}
-                <ProductCarousel>
+                <ProductCarousel category={cat}>
                   {items.map((product) => (
-                    <div key={product.id} className="w-[280px] sm:w-[300px] shrink-0 snap-start flex">
+                    <div key={product.id} className="w-[260px] sm:w-[300px] shrink-0 snap-center flex">
                       <ProductCard product={product} />
                     </div>
                   ))}

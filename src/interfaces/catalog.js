@@ -6,6 +6,72 @@ export const productCategories = [
   "Manteigas",
 ];
 
+export const categoryStyles = {
+  "Leites": {
+    text: "text-blue-500 group-hover:text-blue-600",
+    textStatic: "text-blue-500",
+    icon: "text-blue-500 group-hover:text-blue-600",
+    line: "bg-blue-300 group-hover:bg-blue-400",
+    lineStatic: "bg-blue-200",
+    badge: "bg-blue-50 text-blue-600",
+    buttonActive: "border-blue-500 bg-blue-500 text-white shadow-sm",
+    cardBg: "bg-sky-500",
+  },
+  "Queijos": {
+    text: "text-blue-600 group-hover:text-blue-700",
+    textStatic: "text-blue-600",
+    icon: "text-blue-600 group-hover:text-blue-700",
+    line: "bg-blue-300 group-hover:bg-blue-400",
+    lineStatic: "bg-blue-200",
+    badge: "bg-blue-50 text-blue-600",
+    buttonActive: "border-blue-600 bg-blue-600 text-white shadow-sm",
+    cardBg: "bg-blue-600",
+  },
+  "Iogurtes": {
+    text: "text-pink-500 group-hover:text-pink-600",
+    textStatic: "text-pink-500",
+    icon: "text-pink-500 group-hover:text-pink-600",
+    line: "bg-pink-300 group-hover:bg-pink-400",
+    lineStatic: "bg-pink-200",
+    badge: "bg-pink-50 text-pink-600",
+    buttonActive: "border-pink-500 bg-pink-500 text-white shadow-sm",
+    cardBg: "bg-pink-500",
+  },
+  "Doces": {
+    text: "text-orange-700 group-hover:text-orange-800",
+    textStatic: "text-orange-700",
+    icon: "text-orange-700 group-hover:text-orange-800",
+    line: "bg-orange-300 group-hover:bg-orange-400",
+    lineStatic: "bg-orange-200",
+    badge: "bg-orange-50 text-orange-700",
+    buttonActive: "border-orange-700 bg-orange-700 text-white shadow-sm",
+    cardBg: "bg-orange-600",
+  },
+  "Manteigas": {
+    text: "text-indigo-600 group-hover:text-indigo-700",
+    textStatic: "text-indigo-600",
+    icon: "text-indigo-600 group-hover:text-indigo-700",
+    line: "bg-indigo-300 group-hover:bg-indigo-400",
+    lineStatic: "bg-indigo-200",
+    badge: "bg-indigo-50 text-indigo-600",
+    buttonActive: "border-indigo-600 bg-indigo-600 text-white shadow-sm",
+    cardBg: "bg-indigo-600",
+  },
+};
+
+export function getCategoryStyle(category) {
+  return categoryStyles[category] || {
+    text: "text-amber-500 group-hover:text-amber-600",
+    textStatic: "text-amber-500",
+    icon: "text-amber-500 group-hover:text-amber-600",
+    line: "bg-gray-300 group-hover:bg-gray-400",
+    lineStatic: "bg-gray-200",
+    badge: "bg-orange-50 text-orange-600",
+    buttonActive: "border-orange-500 bg-orange-500 text-white shadow-sm",
+    cardBg: "bg-sky-500",
+  };
+}
+
 export const recipeCategories = [
   "Cafe da manha",
   "Lanches",
@@ -60,5 +126,40 @@ export const demoRecipes = [
     image:
       "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1000&q=80",
     featured: true,
+  },
+];
+
+export const demoHighlights = [
+  {
+    id: "mussarela-vallys",
+    image: "/hero/img1.png",
+    titleLeft: "Mussarela Vallys",
+    subtitleLeft: "Derretimento Perfeito",
+    textRight: "QUALIDADE QUE DERRETE",
+    badge: "100% Puro & Natural",
+  },
+  {
+    id: "requeijao-cremoso",
+    image: "/hero/img2.png",
+    titleLeft: "Requeijão Cremoso",
+    subtitleLeft: "Bisnaga de 1.8kg",
+    textRight: "MAIS SABOR NAS RECEITAS",
+    badge: "Qualidade Premium",
+  },
+  {
+    id: "manteiga-com-sal",
+    image: "/hero/img3.jpeg",
+    titleLeft: "Manteiga com Sal",
+    subtitleLeft: "Puro Creme de Leite",
+    textRight: "CREMOSIDADE NO PÃO",
+    badge: "Sabor de Fazenda",
+  },
+  {
+    id: "requeijao-de-pote",
+    image: "/hero/img4.png",
+    titleLeft: "Requeijão de Pote",
+    subtitleLeft: "Cremoso & Suave",
+    textRight: "O VERDADEIRO REQUEIJÃO",
+    badge: "Muito mais Sabor",
   },
 ];

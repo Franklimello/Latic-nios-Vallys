@@ -3,57 +3,43 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, BadgeCheck, Sparkles, Star, Truck, ChevronLeft, ChevronRight, ChevronDown, Target, Eye, Award } from "lucide-react";
+import { ArrowRight, BadgeCheck, Sparkles, Star, Truck, ChevronLeft, ChevronRight, ChevronDown, Target, Eye, Award, ChefHat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ProductCard from "@/components/ProductCard";
 import RecipeCard from "@/components/RecipeCard";
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useProducts } from "@/hooks/useProducts";
 import { useRecipes } from "@/hooks/useRecipes";
+import { useHighlights } from "@/hooks/useHighlights";
 import ProductCarousel from "@/components/ProductCarousel";
+import { getCategoryStyle, demoHighlights } from "@/interfaces/catalog";
 
-const slides = [
-  {
-    image: "/hero/img1.png",
-    titleLeft: "Mussarela Vallys",
-    subtitleLeft: "Derretimento Perfeito",
-    textRight: "QUALIDADE QUE DERRETE",
-    desc: "A mussarela Vallys possui textura macia, derretimento impecável e o sabor ideal para as suas pizzas e receitas.",
-    badge: "100% Puro & Natural",
-  },
-  {
-    image: "/hero/img2.png",
-    titleLeft: "Requeijão Cremoso",
-    subtitleLeft: "Bisnaga de 1.8kg",
-    textRight: "MAIS SABOR NAS RECEITAS",
-    desc: "Perfeito para pizzas, salgados e pratos assados. Forneável e com a cremosidade que você já conhece.",
-    badge: "Qualidade Premium",
-  },
-  {
-    image: "/hero/img3.jpeg",
-    titleLeft: "Manteiga com Sal",
-    subtitleLeft: "Puro Creme de Leite",
-    textRight: "CREMOSIDADE NO PÃO",
-    desc: "Produzida com puro creme de leite selecionado, garantindo aquele sabor e cremosidade perfeitos no pão quentinho.",
-    badge: "Sabor de Fazenda",
-  },
-  {
-    image: "/hero/img4.png",
-    titleLeft: "Requeijão de Pote",
-    subtitleLeft: "Cremoso & Suave",
-    textRight: "O VERDADEIRO REQUEIJÃO",
-    desc: "Com textura super cremosa e sabor incomparável, é o acompanhamento ideal para o café da manhã ou lanche da tarde.",
-    badge: "Muito mais Sabor",
-  },
-];
+
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const autoplayTimer = useRef(null);
+  
+  const recipeScrollRef = useRef(null);
+
+  const scrollRecipes = useCallback((direction) => {
+    if (recipeScrollRef.current) {
+      const { scrollLeft, clientWidth } = recipeScrollRef.current;
+      const scrollTo = direction === "left"
+        ? scrollLeft - clientWidth
+        : scrollLeft + clientWidth;
+      recipeScrollRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
+    }
+  }, []);
 
   const { products, loading: productsLoading, error: productsError } = useProducts();
   const { recipes, loading: recipesLoading } = useRecipes();
+  const { highlights, loading: highlightsLoading } = useHighlights();
+
+  const slides = useMemo(() => {
+    return highlights.length > 0 ? highlights : demoHighlights;
+  }, [highlights]);
 
   const [expandedCategories, setExpandedCategories] = useState({});
 
@@ -70,6 +56,12 @@ export default function Home() {
     }
   }, [products]);
 
+  useEffect(() => {
+    if (currentSlide >= slides.length) {
+      setCurrentSlide(0);
+    }
+  }, [slides, currentSlide]);
+
   const toggleCategory = (category) => {
     setExpandedCategories((prev) => ({
       ...prev,
@@ -77,13 +69,13 @@ export default function Home() {
     }));
   };
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
-  };
+  }, [slides.length]);
 
-  const prevSlide = () => {
+  const prevSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  };
+  }, [slides.length]);
 
   useEffect(() => {
     if (isPlaying) {
@@ -92,9 +84,15 @@ export default function Home() {
     return () => {
       if (autoplayTimer.current) clearInterval(autoplayTimer.current);
     };
-  }, [isPlaying]);
+  }, [isPlaying, nextSlide]);
 
-  const slide = slides[currentSlide];
+  const slide = slides[currentSlide] || {
+    image: "/logo.png",
+    titleLeft: "",
+    subtitleLeft: "",
+    textRight: "",
+    badge: "",
+  };
 
   // Group products by category
   const productsByCategory = useMemo(() => {
@@ -118,7 +116,7 @@ export default function Home() {
         onMouseLeave={() => setIsPlaying(true)}
       >
         {/* Imagem do Slide: No mobile fica no topo (relativa), no desktop vira fundo (absoluta) */}
-        <div className="w-full relative aspect-[4/3] sm:aspect-[16/9] md:absolute md:inset-0 md:w-full md:h-full md:aspect-auto z-0 overflow-hidden">
+        <div className="w-full relative h-[380px] xs:h-[420px] sm:h-[480px] md:absolute md:inset-0 md:w-full md:h-full z-0 overflow-hidden">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentSlide}
@@ -173,10 +171,6 @@ export default function Home() {
                     {slide.subtitleLeft}
                   </span>
                 </div>
-                
-                <p className="max-w-xl text-base sm:text-lg leading-relaxed text-white/90 drop-shadow-sm">
-                  {slide.desc}
-                </p>
                 
                 <div className="pt-2 md:pt-4 flex flex-wrap gap-3">
                   <Button
@@ -296,6 +290,7 @@ export default function Home() {
         ) : (
           Object.entries(productsByCategory).map(([category, items]) => {
             const isExpanded = !!expandedCategories[category];
+            const style = getCategoryStyle(category);
             return (
               <div key={category} className="mb-16">
                 {/* Category Title & Toggle Button */}
@@ -304,18 +299,18 @@ export default function Home() {
                   onClick={() => toggleCategory(category)}
                 >
                   <div className="flex items-center gap-2 justify-center">
-                    <h3 className="font-caveat text-4xl text-amber-500 font-semibold tracking-wide transition-colors group-hover:text-amber-600">
+                    <h3 className={`font-caveat text-4xl font-semibold tracking-wide transition-colors ${style.text}`}>
                       Linha {category}
                     </h3>
                     <motion.div
                       animate={{ rotate: isExpanded ? 180 : 0 }}
                       transition={{ duration: 0.3 }}
-                      className="text-amber-500 group-hover:text-amber-600"
+                      className={`transition-colors ${style.icon}`}
                     >
                       <ChevronDown size={28} />
                     </motion.div>
                   </div>
-                  <div className="w-[120px] h-[1px] bg-gray-300 mt-2 transition-all group-hover:w-[160px]" />
+                  <div className={`w-[120px] h-[1px] mt-2 transition-all group-hover:w-[160px] ${style.line}`} />
                   <span className="text-[11px] text-muted font-bold uppercase tracking-wider mt-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
                     {isExpanded ? "Clique para recolher" : "Clique para expandir"}
                   </span>
@@ -331,9 +326,9 @@ export default function Home() {
                       transition={{ duration: 0.35, ease: "easeInOut" }}
                       className="overflow-hidden"
                     >
-                      <ProductCarousel>
+                      <ProductCarousel category={category}>
                         {items.map((product) => (
-                          <div key={product.id} className="w-[280px] sm:w-[300px] shrink-0 snap-start flex">
+                          <div key={product.id} className="w-[260px] sm:w-[300px] shrink-0 snap-center flex">
                             <ProductCard product={product} />
                           </div>
                         ))}
@@ -476,42 +471,114 @@ export default function Home() {
         </div>
       </section>
 
-      {/* RECEITAS */}
-      <section className="border-y border-[#2d2d8e]/10 bg-[#2d2d8e]/5">
-        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end"
+      {/* DIVISOR DE TRANSIÇÃO PARA RECEITAS */}
+      <div className="w-full bg-white flex justify-center py-8 border-t border-gray-100 md:hidden">
+        <Image
+          src="/receitas-divider.png"
+          alt="Utensílios de Cozinha Vallys"
+          width={550}
+          height={275}
+          className="w-full max-w-[450px] h-auto object-contain opacity-95 px-6"
+        />
+      </div>
+
+      {/* SEÇÃO RECEITAS - ESTILO DALLORA MINIMALISTA EM CARROSSEL */}
+      <section className="bg-[#1a1a4e] py-20 text-white overflow-hidden relative">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center mb-16 space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-widest text-sky-400">
+              Cozinha Vallys
+            </p>
+            <h2 className="text-3xl font-extrabold sm:text-4xl uppercase tracking-tight text-white">
+              Receitas Saudáveis
+            </h2>
+            <div className="h-[2px] w-[60px] bg-sky-400 mx-auto rounded-full mt-3"></div>
+          </div>
+
+          {/* Recipes Carousel Viewport */}
+          <div
+            ref={recipeScrollRef}
+            className="no-scrollbar flex overflow-x-auto gap-0 scroll-smooth snap-x snap-mandatory pb-6 w-full max-w-[300px] sm:max-w-[340px] md:max-w-4xl mx-auto"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wider text-[#4a4ac8]">
-                Cozinha Vallys
-              </p>
-              <h2 className="mt-2 text-3xl font-bold text-foreground">Receitas para testar hoje</h2>
-            </div>
-            <Button
-              asChild
-              variant="outline"
-              className="border-[#2d2d8e] text-[#2d2d8e] hover:bg-[#2d2d8e] hover:text-white"
+            {!recipesLoading && recipes.map((recipe, i) => {
+              const words = recipe.title.split(" ");
+              const firstWord = words[0].toUpperCase();
+              const restOfTitle = words.slice(1).join(" ").toLowerCase();
+
+              return (
+                <div
+                  key={recipe.id}
+                  className="w-full shrink-0 snap-center flex justify-center px-4"
+                >
+                  <div className="w-full flex flex-col md:flex-row items-center justify-between text-center md:text-left space-y-6 md:space-y-0 md:h-[240px] md:px-4">
+                    {/* Title Wrapper (Col 1: Left) */}
+                    <div className="space-y-1 md:w-1/3 flex flex-col items-center md:items-start shrink-0">
+                      <h3 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight leading-none text-white font-sans">
+                        {firstWord}
+                      </h3>
+                      <span className="text-xs md:text-sm font-bold uppercase tracking-widest text-sky-300/80 block">
+                        {restOfTitle}
+                      </span>
+                    </div>
+
+                    {/* Transparent Recipe Image (Col 2: Center) */}
+                    <div className="relative aspect-[4/3] md:aspect-auto w-full max-w-[280px] md:w-1/3 md:h-full flex items-center justify-center p-2 hover:scale-105 transition-transform duration-300 shrink-0">
+                      {recipe.image ? (
+                        <Image
+                          src={recipe.image}
+                          alt={recipe.title}
+                          fill
+                          className="object-contain"
+                          sizes="(max-width: 768px) 280px, 350px"
+                        />
+                      ) : (
+                        <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center text-white/40">
+                          Receita
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Action Button (Col 3: Right) */}
+                    <div className="md:w-1/3 flex justify-center md:justify-end items-center shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          window.location.href = `/receitas?id=${recipe.id}`;
+                        }}
+                        className="px-8 py-3.5 bg-sky-400 hover:bg-sky-500 text-[#1a1a4e] font-bold text-xs md:text-sm uppercase tracking-wider rounded-full shadow-md transition-all active:scale-95 duration-200 cursor-pointer"
+                      >
+                        prepare agora
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Recipes Controls */}
+          <div className="flex items-center justify-center gap-6 mt-6 select-none z-20">
+            <button
+              onClick={() => scrollRecipes("left")}
+              className="p-2 transition-all hover:scale-110 active:scale-90 cursor-pointer text-sky-400 hover:text-sky-300"
+              aria-label="Anterior"
             >
-              <Link href="/receitas">Ver receitas</Link>
-            </Button>
-          </motion.div>
-          <div className="grid gap-6 md:grid-cols-2">
-            {!recipesLoading && recipes.slice(0, 2).map((recipe, i) => (
-              <motion.div
-                key={recipe.id}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.15 }}
-              >
-                <RecipeCard recipe={recipe} />
-              </motion.div>
-            ))}
+              <ChevronLeft size={36} className="stroke-[3]" />
+            </button>
+
+            <div className="text-sky-400 transition-transform hover:scale-110 duration-300">
+              <ChefHat size={32} className="stroke-[1.8]" />
+            </div>
+
+            <button
+              onClick={() => scrollRecipes("right")}
+              className="p-2 transition-all hover:scale-110 active:scale-90 cursor-pointer text-sky-400 hover:text-sky-300"
+              aria-label="Próximo"
+            >
+              <ChevronRight size={36} className="stroke-[3]" />
+            </button>
           </div>
         </div>
       </section>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BookOpen, Boxes, LogOut } from "lucide-react";
+import { BookOpen, Boxes, LogOut, Sparkles } from "lucide-react";
 import AdminGuard from "@/components/AdminGuard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,7 +15,7 @@ export default function AdminPage() {
           <div>
             <h1 className="text-4xl font-semibold">Painel administrativo</h1>
             <p className="mt-3 text-muted">
-              Gerencie produtos e receitas publicados no site.
+              Gerencie produtos, receitas e destaques publicados no site.
             </p>
           </div>
           <Button variant="outline" onClick={logoutAdmin}>
@@ -24,7 +24,7 @@ export default function AdminPage() {
           </Button>
         </div>
 
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-3">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -55,6 +55,23 @@ export default function AdminPage() {
               </p>
               <Button asChild>
                 <Link href="/admin/receitas">Gerenciar receitas</Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles size={22} className="text-amber-500 fill-amber-500" />
+                Destaques (Banner)
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+              <p className="text-sm leading-6 text-muted">
+                Gerencie os slides rotativos em destaque no topo da home page.
+              </p>
+              <Button asChild>
+                <Link href="/admin/destaques">Gerenciar destaques</Link>
               </Button>
             </CardContent>
           </Card>
