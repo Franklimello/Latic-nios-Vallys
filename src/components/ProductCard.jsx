@@ -15,7 +15,7 @@ export default function ProductCard({ product }) {
     const text = encodeURIComponent(
       `Olá! Gostaria de saber mais informações sobre o produto: *${product.name}* (Linha: ${product.category}).`
     );
-    window.open(`https://wa.me/5500000000000?text=${text}`, "_blank");
+    window.open(`https://wa.me/5533999838182?text=${text}`, "_blank");
   };
 
   return (
