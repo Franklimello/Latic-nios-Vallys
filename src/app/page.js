@@ -502,7 +502,51 @@ export default function Home() {
             <h2 className="text-3xl font-extrabold sm:text-4xl uppercase tracking-tight text-white">
               Receitas Saudáveis
             </h2>
-            <div className="h-[2px] w-[60px] bg-sky-400 mx-auto rounded-full mt-3"></div>
+            <div className="flex justify-center mt-3 text-sky-400 select-none pointer-events-none">
+              <style>{`
+                @keyframes spoon-stir {
+                  0% { transform: translate(0, 0) rotate(0deg); }
+                  25% { transform: translate(1.5px, -1.5px) rotate(6deg); }
+                  50% { transform: translate(3px, 0.5px) rotate(12deg); }
+                  75% { transform: translate(1px, 2px) rotate(6deg); }
+                  100% { transform: translate(0, 0) rotate(0deg); }
+                }
+                @keyframes steam-rise {
+                  0% { opacity: 0; transform: translateY(2px) scaleX(0.9); }
+                  50% { opacity: 0.7; transform: translateY(-3px) scaleX(1.1); }
+                  100% { opacity: 0; transform: translateY(-8px) scaleX(0.8); }
+                }
+                .stirring-spoon {
+                  animation: spoon-stir 1.8s ease-in-out infinite;
+                  transform-origin: 26px 12px;
+                }
+                .steam-line-1 {
+                  animation: steam-rise 2s ease-in-out infinite;
+                }
+                .steam-line-2 {
+                  animation: steam-rise 2s ease-in-out infinite 1s;
+                }
+              `}</style>
+              <svg width="56" height="56" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-90">
+                {/* Steam lines */}
+                <path d="M17 15c0.5-2.5-0.5-4 0-6" strokeWidth="1.5" className="steam-line-1 text-sky-300" />
+                <path d="M23 14c0.5-2.5-0.5-4 0-6" strokeWidth="1.5" className="steam-line-2 text-sky-300" />
+
+                {/* Bowl Rim */}
+                <ellipse cx="20" cy="21" rx="11" ry="3" />
+
+                {/* Bowl Body */}
+                <path d="M9 21c0 8 5.5 11 11 11s11-3 11-11" />
+
+                {/* Spoon stirring */}
+                <g className="stirring-spoon">
+                  {/* Spoon Cup */}
+                  <ellipse cx="17" cy="21.5" rx="3" ry="2" transform="rotate(-35 17 21.5)" fill="currentColor" fillOpacity="0.15" />
+                  {/* Spoon Handle */}
+                  <path d="M19 19.5l7.5-7.5" />
+                </g>
+              </svg>
+            </div>
           </div>
 
           {/* Recipes Carousel Viewport */}
