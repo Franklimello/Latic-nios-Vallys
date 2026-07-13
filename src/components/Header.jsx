@@ -12,6 +12,7 @@ const navItems = [
   { href: "/produtos", label: "Produtos" },
   { href: "/receitas", label: "Receitas" },
   { href: "/sobre", label: "Sobre" },
+  { href: "/trabalhe-conosco", label: "Trabalhe Conosco" },
   { href: "/contato", label: "Contato" },
 ];
 
@@ -122,13 +123,13 @@ export default function Header() {
         </div>
 
         {/* Menu Principal (Centralizado) */}
-        <nav className="hidden items-center justify-center gap-1 lg:gap-3 md:flex flex-1">
+        <nav className="hidden items-center justify-center gap-0.5 lg:gap-2 xl:gap-3 md:flex flex-1 mx-2">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "rounded-[8px] px-3 py-2 text-sm lg:text-lg lg:px-6 lg:py-3 font-semibold text-gray-600 transition-all hover:bg-gray-50 hover:text-[#00b1f4]",
+                "rounded-[8px] px-2.5 py-2 text-[13px] lg:text-base xl:text-lg lg:px-4 lg:py-3 font-semibold text-gray-600 transition-all hover:bg-gray-50 hover:text-[#00b1f4] whitespace-nowrap",
                 pathname === item.href && "bg-blue-50 text-[#00b1f4]",
               )}
             >

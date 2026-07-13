@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { toast } from "sonner";
 import { Pencil, Trash2, ChevronUp, ChevronDown } from "lucide-react";
 import AdminGuard from "@/components/AdminGuard";
@@ -23,6 +23,16 @@ export default function AdminHighlightsPage() {
   const [editing, setEditing] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [reordering, setReordering] = useState(false);
+  const formRef = useRef(null);
+
+  const handleEdit = (item) => {
+    setEditing(item);
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      const firstInput = formRef.current?.querySelector("input, select, textarea");
+      firstInput?.focus();
+    }, 100);
+  };
 
   async function saveHighlight(values) {
     setSubmitting(true);
@@ -103,7 +113,7 @@ export default function AdminHighlightsPage() {
   return (
     <AdminGuard>
       <section className="mx-auto grid max-w-7xl gap-8 px-6 py-14 lg:grid-cols-[420px_1fr] lg:px-8">
-        <Card className="h-fit">
+        <Card className="h-fit" ref={formRef}>
           <CardHeader>
             <CardTitle>{editing ? "Editar Destaque" : "Novo Destaque"}</CardTitle>
           </CardHeader>
@@ -188,7 +198,7 @@ export default function AdminHighlightsPage() {
                         type="button"
                         variant="outline"
                         size="sm"
-                        onClick={() => setEditing(item)}
+                        onClick={() => handleEdit(item)}
                       >
                         <Pencil size={16} />
                         Editar

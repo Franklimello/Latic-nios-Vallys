@@ -160,7 +160,7 @@ export default function AboutPage() {
             <h2 className="text-2xl font-bold text-foreground">Visão</h2>
           </div>
           <p className="text-muted leading-relaxed font-medium">
-            Ser reconhecida como uma das principais indústrias de laticínios de Minas Gerais e do Brasil, destacando-se pela qualidade dos nossos produtos, inovação, eficiência na gestão e compromisso com a satisfação dos clientes. Buscamos também ser referência como uma empresa que valoriza seus colaboradores e mantém relações sólidas, justas e confiáveis com os produtores rurais da nossa região.
+            Ser referência como uma das principais indústrias de laticínios de Minas Gerais e região, destacando-se pela qualidade dos nossos produtos, inovação, eficiência na gestão e compromisso com a satisfação dos clientes. Buscamos também valorizar nossos colaboradores e manter relações sólidas, justas e confiáveis com os produtores rurais da nossa região.
           </p>
         </motion.div>
       </div>

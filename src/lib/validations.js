@@ -42,3 +42,13 @@ export const highlightSchema = z.object({
   image: z.string().url("Use uma URL válida.").optional().or(z.literal("")),
   imageFile: z.any().optional(),
 });
+
+export const candidateSchema = z.object({
+  name: z.string().min(3, "Informe seu nome completo."),
+  email: z.string().email("Informe um e-mail válido."),
+  phone: z.string().min(10, "Informe um telefone válido com DDD."),
+  area: z.string().min(1, "Selecione uma área de interesse."),
+  resumeLink: z.string().url("Informe um link de currículo válido (ex: Google Drive, Dropbox, OneDrive ou LinkedIn).").optional().or(z.literal("")),
+  message: z.string().min(10, "Escreva uma breve mensagem de apresentação (mínimo 10 caracteres)."),
+});
+

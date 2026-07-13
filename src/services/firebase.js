@@ -382,3 +382,17 @@ export async function initializeAndSwap(collectionName, orderedIds, idA, indexA,
 
   clearStoredCache(cacheKeyMap[collectionName] || collectionName);
 }
+
+/**
+ * Salva a candidatura de um interessado no Trabalhe Conosco na coleção 'candidates' do Firestore.
+ */
+export async function saveCandidate(candidate) {
+  if (!db) {
+    throw new Error("Configure o Firebase para salvar currículos.");
+  }
+  return await addDoc(collection(db, "candidates"), {
+    ...cleanPayload(candidate),
+    createdAt: serverTimestamp(),
+  });
+}
+

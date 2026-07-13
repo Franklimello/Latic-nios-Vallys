@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { Pencil, Trash2, ChevronUp, ChevronDown } from "lucide-react";
 import AdminGuard from "@/components/AdminGuard";
@@ -25,6 +25,16 @@ export default function AdminProductsPage() {
   const [editing, setEditing] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [reordering, setReordering] = useState(false);
+  const formRef = useRef(null);
+
+  const handleEdit = (product) => {
+    setEditing(product);
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      const firstInput = formRef.current?.querySelector("input, select, textarea");
+      firstInput?.focus();
+    }, 100);
+  };
   
   // Set default active tab
   const [activeCategory, setActiveCategory] = useState(productCategories[0]);
@@ -126,7 +136,7 @@ export default function AdminProductsPage() {
   return (
     <AdminGuard>
       <section className="mx-auto grid max-w-7xl gap-8 px-6 py-14 lg:grid-cols-[420px_1fr] lg:px-8">
-        <Card className="h-fit">
+        <Card className="h-fit" ref={formRef}>
           <CardHeader>
             <CardTitle>{editing ? "Editar produto" : "Novo produto"}</CardTitle>
           </CardHeader>
@@ -209,7 +219,7 @@ export default function AdminProductsPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => setEditing(product)}
+                    onClick={() => handleEdit(product)}
                   >
                     <Pencil size={16} />
                     Editar

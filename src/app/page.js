@@ -195,7 +195,7 @@ export default function Home() {
     <div>
       {/* HERO CAROUSEL */}
       <section 
-        className="relative bg-[#00b1f4] overflow-hidden min-h-0 md:min-h-[calc(100vh-96px-6px)] flex flex-col md:flex-row md:items-center justify-center select-none"
+        className="relative bg-[#00b1f4] overflow-hidden min-h-0 md:min-h-[calc(100vh-96px-6px)] lg:min-h-[calc(100vh-172px)] flex flex-col md:flex-row md:items-center justify-center select-none"
         onMouseEnter={() => setIsPlaying(false)}
         onMouseLeave={() => setIsPlaying(true)}
       >
@@ -512,7 +512,7 @@ export default function Home() {
                 Visão
               </h3>
               <p className="text-sm leading-relaxed text-muted font-medium max-w-sm">
-                Ser reconhecida nacionalmente no setor de laticínios pela qualidade dos produtos, inovação contínua e valorização de colaboradores e parceiros.
+                Ser referência no setor de laticínios pela qualidade dos produtos, inovação contínua e valorização de colaboradores e parceiros.
               </p>
             </motion.div>
 

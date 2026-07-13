@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { toast } from "sonner";
 import { Pencil, Trash2 } from "lucide-react";
 import AdminGuard from "@/components/AdminGuard";
@@ -19,6 +19,16 @@ export default function AdminRecipesPage() {
   const { recipes, loading, error, reload } = useRecipes();
   const [editing, setEditing] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const formRef = useRef(null);
+
+  const handleEdit = (recipe) => {
+    setEditing(recipe);
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      const firstInput = formRef.current?.querySelector("input, select, textarea");
+      firstInput?.focus();
+    }, 100);
+  };
 
   async function saveRecipe(values) {
     setSubmitting(true);
@@ -58,7 +68,7 @@ export default function AdminRecipesPage() {
   return (
     <AdminGuard>
       <section className="mx-auto grid max-w-7xl gap-8 px-6 py-14 lg:grid-cols-[460px_1fr] lg:px-8">
-        <Card className="h-fit">
+        <Card className="h-fit" ref={formRef}>
           <CardHeader>
             <CardTitle>{editing ? "Editar receita" : "Nova receita"}</CardTitle>
           </CardHeader>
@@ -92,7 +102,7 @@ export default function AdminRecipesPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => setEditing(recipe)}
+                    onClick={() => handleEdit(recipe)}
                   >
                     <Pencil size={16} />
                     Editar

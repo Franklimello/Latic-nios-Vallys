@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { X, MessageCircle } from "lucide-react";
+import { X, MessageCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { createPortal } from "react-dom";
 import { getCategoryStyle } from "@/interfaces/catalog";
 import { cn } from "@/lib/utils";
 
 export default function ProductCard({ product }) {
   const [showModal, setShowModal] = useState(false);
+  const [descExpanded, setDescExpanded] = useState(false);
   const style = getCategoryStyle(product.category);
 
   const handleWhatsAppContact = () => {
@@ -70,46 +71,61 @@ export default function ProductCard({ product }) {
           onClick={() => setShowModal(false)}
         >
           <div
-            className="relative w-full max-w-2xl bg-white rounded-[24px] shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] overflow-y-auto md:overflow-visible"
+            className={cn(
+              "relative w-full max-w-lg md:max-w-4xl lg:max-w-5xl xl:max-w-6xl rounded-[24px] shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[95vh] md:max-h-[90vh] overflow-y-auto text-white",
+              style.cardBg
+            )}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
             <button
               type="button"
               onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/85 hover:bg-gray-100 text-gray-500 hover:text-gray-800 transition-colors shadow-sm cursor-pointer"
+              className="absolute top-4 right-4 z-10 p-2.5 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors shadow-sm cursor-pointer backdrop-blur-sm"
             >
-              <X size={20} />
+              <X size={22} />
             </button>
 
             {/* Modal Left Side (Image) */}
-            <div className="relative w-full md:w-1/2 min-h-[300px] md:h-auto bg-gray-50 flex items-center justify-center p-8">
+            <div className="relative w-full md:w-[58%] min-h-[380px] sm:min-h-[440px] md:min-h-[500px] lg:min-h-[600px] bg-black/10 flex items-center justify-center p-8 md:p-12 lg:p-16">
               <Image
                 src={product.image || "/logo.png"}
                 alt={product.name}
                 fill
-                sizes="(max-width: 768px) 100vw, 500px"
-                className="object-contain p-4"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 500px, 800px"
+                className="object-contain p-4 md:p-8"
               />
             </div>
 
             {/* Modal Right Side (Content) */}
-            <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-between">
+            <div className="w-full md:w-[42%] p-6 md:p-10 lg:p-12 xl:p-16 flex flex-col justify-between">
               <div>
-                <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 ${getCategoryStyle(product.category).badge}`}>
-                  {product.category}
+                <span className="inline-block px-3 py-1 rounded-full text-xs md:text-sm font-bold uppercase tracking-wider mb-3 md:mb-4 bg-white/20 text-white">
+                  {product.category === "Iogurtes" || product.category === "Iogurte" ? "Bebida Láctea" : product.category}
                 </span>
-                <h2 className="text-2xl font-extrabold text-[#1a1a4e] leading-tight mb-2">
+                <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-extrabold text-white leading-tight mb-2 md:mb-4">
                   {product.name}
                 </h2>
-                <p className="text-lg font-bold text-orange-500 mb-4">
+                <p className="text-lg md:text-xl lg:text-2xl font-extrabold text-yellow-300 mb-4 md:mb-6">
                   {product.price || "Sob Consulta"}
                 </p>
-                <div className="border-t border-gray-100 pt-4 mb-6">
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Descrição</h4>
-                  <p className="text-sm leading-relaxed text-gray-600 max-h-[180px] overflow-y-auto pr-2 animate-in fade-in">
-                    {product.description || "Sem descrição disponível."}
-                  </p>
+                <div className="border-t border-white/20 pt-4 md:pt-6 mb-6 md:mb-8">
+                  <button 
+                    type="button"
+                    onClick={() => setDescExpanded(!descExpanded)}
+                    className="flex items-center justify-between w-full text-left focus:outline-none group/desc cursor-pointer"
+                  >
+                    <h4 className="text-xs md:text-sm font-bold uppercase tracking-widest text-white/60 group-hover/desc:text-white transition-colors">Descrição</h4>
+                    <div className="flex items-center gap-1 bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition-all px-2.5 py-1 rounded-lg text-xs font-bold">
+                      <span>{descExpanded ? "Recolher" : "Ver Detalhes"}</span>
+                      {descExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                    </div>
+                  </button>
+                  {descExpanded && (
+                    <p className="text-sm md:text-base lg:text-lg leading-relaxed text-white/95 max-h-[150px] md:max-h-[250px] lg:max-h-[350px] overflow-y-auto pr-2 mt-4 animate-in fade-in slide-in-from-top-3 duration-300">
+                      {product.description || "Sem descrição disponível."}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -117,9 +133,9 @@ export default function ProductCard({ product }) {
               <button
                 type="button"
                 onClick={handleWhatsAppContact}
-                className="w-full h-12 flex items-center justify-center gap-2 rounded-[12px] bg-[#25D366] text-white font-bold text-[15px] hover:bg-[#20ba5a] active:scale-95 transition-all shadow-md shadow-emerald-500/10 cursor-pointer mt-4"
+                className="w-full h-12 md:h-14 flex items-center justify-center gap-2 rounded-[12px] bg-[#25D366] text-white font-bold text-[15px] md:text-lg hover:bg-[#20ba5a] active:scale-95 transition-all shadow-lg shadow-black/20 cursor-pointer mt-4 md:mt-6"
               >
-                <MessageCircle size={18} />
+                <MessageCircle size={20} />
                 Fazer Pedido / WhatsApp
               </button>
             </div>
