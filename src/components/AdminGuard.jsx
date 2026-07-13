@@ -49,8 +49,12 @@ export default function AdminGuard({ children }) {
     );
   }
 
-  const adminUid = process.env.NEXT_PUBLIC_ADMIN_UID || "JPY8rJxcWNZ16mmce4OSTDqm1no2";
-  const isAdmin = user && user.uid === adminUid;
+  const adminUids = [
+    process.env.NEXT_PUBLIC_ADMIN_UID,
+    "JPY8rJxcWNZ16mmce4OSTDqm1no2",
+    "xQyXhiHNchWBJr0FzPqG5mSuyE83"
+  ].filter(Boolean);
+  const isAdmin = user && adminUids.includes(user.uid);
 
   if (!user || !isAdmin) {
     return (
