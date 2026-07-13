@@ -88,13 +88,15 @@ export default function ProductCard({ product }) {
 
             {/* Modal Left Side (Image) */}
             <div className="relative w-full md:w-[58%] min-h-[380px] sm:min-h-[440px] md:min-h-[500px] lg:min-h-[600px] bg-black/10 flex items-center justify-center p-8 md:p-12 lg:p-16">
-              <Image
-                src={product.image || "/logo.png"}
-                alt={product.name}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 500px, 800px"
-                className="object-contain p-4 md:p-8"
-              />
+              <div className="absolute inset-0 animate-product-drop">
+                <Image
+                  src={product.image || "/logo.png"}
+                  alt={product.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 500px, 800px"
+                  className="object-contain p-4 md:p-8"
+                />
+              </div>
             </div>
 
             {/* Modal Right Side (Content) */}
