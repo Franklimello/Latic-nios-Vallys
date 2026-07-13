@@ -1,0 +1,40 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: Verifica se a requisição é feita por um administrador autenticado e com ID correto
+    function isAdmin() {
+      return request.auth != null && request.auth.uid == 'JPY8rJxcWNZ16mmce4OSTDqm1no2';
+    }
+
+    // Regras para a coleção de Produtos
+    match /products/{productId} {
+      allow read: if true; // Qualquer visitante pode ler os produtos
+      allow write: if isAdmin(); // Apenas administradores autenticados podem criar, atualizar ou excluir
+    }
+
+    // Regras para a coleção de Receitas
+    match /recipes/{recipeId} {
+      allow read: if true; // Qualquer visitante pode ler as receitas
+      allow write: if isAdmin(); // Apenas administradores autenticados podem criar, atualizar ou excluir
+    }
+
+    // Regras para a coleção de Destaques (Banner Rotativo)
+    match /highlights/{highlightId} {
+      allow read: if true; // Qualquer visitante pode ler os destaques
+      allow write: if isAdmin(); // Apenas administradores autenticados podem criar, atualizar ou excluir
+    }
+
+    // Regras para a coleção de Candidatos (Trabalhe Conosco)
+    match /candidates/{candidateId} {
+      allow create: if true; // Qualquer pessoa pode enviar uma nova candidatura (formulário público)
+      allow read, update, delete: if isAdmin(); // Apenas administradores autenticados podem visualizar ou gerenciar currículos
+    }
+
+    // Bloqueia qualquer outra rota/documento não especificado por padrão
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
