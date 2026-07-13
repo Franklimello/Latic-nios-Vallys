@@ -79,7 +79,7 @@ export default function Footer() {
           <div className="grid gap-2 text-sm font-medium text-white/80">
             <Link href="/produtos?cat=Leites" className="hover:text-white hover:underline transition-all">Linha Leites</Link>
             <Link href="/produtos?cat=Queijos" className="hover:text-white hover:underline transition-all">Linha Queijos</Link>
-            <Link href="/produtos?cat=Iogurtes" className="hover:text-white hover:underline transition-all">Linha Iogurtes</Link>
+            <Link href="/produtos?cat=Bebidas Lácteas" className="hover:text-white hover:underline transition-all">Linha Bebidas Lácteas</Link>
             <Link href="/produtos?cat=Manteigas" className="hover:text-white hover:underline transition-all">Linha Manteigas</Link>
             <span className="text-white/60 italic">E muito mais...</span>
           </div>

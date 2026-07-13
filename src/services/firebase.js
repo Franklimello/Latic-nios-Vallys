@@ -11,6 +11,7 @@ import {
   serverTimestamp,
   updateDoc,
   setDoc,
+  writeBatch,
 } from "firebase/firestore";
 import {
   getAuth,
@@ -76,21 +77,27 @@ async function readCollection(collectionName, fallback) {
     }
   });
 
-  // Sort client-side by createdAt or updatedAt safely, keeping mock items relative order
+  // Sort by `order` field when present, then by createdAt as fallback
   merged.sort((a, b) => {
+    const orderA = typeof a.order === "number" ? a.order : Infinity;
+    const orderB = typeof b.order === "number" ? b.order : Infinity;
+    if (orderA !== Infinity || orderB !== Infinity) {
+      return orderA - orderB;
+    }
+    // Fallback: sort by createdAt desc for items without order
     const getVal = (x) => {
       if (x.createdAt?.seconds) return x.createdAt.seconds;
       if (x.updatedAt?.seconds) return x.updatedAt.seconds;
-      return 0; // for mock items
+      return 0;
     };
     const valA = getVal(a);
     const valB = getVal(b);
     if (valA !== 0 && valB !== 0) {
-      return valB - valA; // sort db items by date desc
+      return valB - valA;
     }
-    if (valA !== 0) return -1; // db items first
+    if (valA !== 0) return -1;
     if (valB !== 0) return 1;
-    return 0; // keep relative order of mock items
+    return 0;
   });
 
   return merged;
@@ -164,8 +171,14 @@ export async function createProduct(product) {
   if (!db) {
     throw new Error("Configure o Firebase para salvar produtos.");
   }
+  const category = product.category || "Outros";
+  const snapshot = await getDocs(collection(db, "products"));
+  const categoryCount = snapshot.docs.filter(
+    (doc) => (doc.data().category || "Outros") === category
+  ).length;
   const result = await addDoc(collection(db, "products"), {
     ...cleanPayload(product),
+    order: categoryCount,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
@@ -252,8 +265,11 @@ export async function createHighlight(highlight) {
   if (!db) {
     throw new Error("Configure o Firebase para salvar destaques.");
   }
+  const snapshot = await getDocs(collection(db, "highlights"));
+  const nextOrder = snapshot.size;
   const result = await addDoc(collection(db, "highlights"), {
     ...cleanPayload(highlight),
+    order: nextOrder,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
@@ -280,4 +296,89 @@ export async function deleteHighlight(id) {
   const result = await deleteDoc(doc(db, "highlights", id));
   clearStoredCache("vallys_highlights");
   return result;
+}
+
+// ─── Ordering helpers ─────────────────────────────────────────────
+
+const cacheKeyMap = {
+  products: "vallys_products",
+  highlights: "vallys_highlights",
+  recipes: "vallys_recipes",
+};
+
+/**
+ * Swap the `order` field of two items in a Firestore collection.
+ */
+export async function swapOrder(collectionName, idA, orderA, idB, orderB) {
+  if (!db) {
+    throw new Error("Configure o Firebase para reordenar.");
+  }
+
+  const batch = writeBatch(db);
+  batch.update(doc(db, collectionName, idA), { order: orderB });
+  batch.update(doc(db, collectionName, idB), { order: orderA });
+  await batch.commit();
+
+  clearStoredCache(cacheKeyMap[collectionName] || collectionName);
+}
+
+/**
+ * Re-index the `order` field of all items in a collection (0, 1, 2, ...).
+ * Useful after deleting an item to keep order contiguous.
+ */
+export async function reindexOrders(collectionName, orderedIds) {
+  if (!db) {
+    throw new Error("Configure o Firebase para reindexar.");
+  }
+
+  const batch = writeBatch(db);
+  orderedIds.forEach((id, index) => {
+    batch.update(doc(db, collectionName, id), { order: index });
+  });
+  await batch.commit();
+
+  clearStoredCache(cacheKeyMap[collectionName] || collectionName);
+}
+
+/**
+ * Ensure a demo/fallback item exists in Firestore so it can be reordered.
+ * Creates the document using the item's hardcoded id if it doesn't exist yet.
+ */
+export async function ensurePersisted(collectionName, item, order) {
+  if (!db) {
+    throw new Error("Configure o Firebase.");
+  }
+
+  const { id, ...data } = item;
+  await setDoc(doc(db, collectionName, id), {
+    ...cleanPayload(data),
+    order,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+
+  clearStoredCache(cacheKeyMap[collectionName] || collectionName);
+}
+
+/**
+ * Atomically initialize orders for a list of items and swap two target items.
+ */
+export async function initializeAndSwap(collectionName, orderedIds, idA, indexA, idB, indexB) {
+  if (!db) {
+    throw new Error("Configure o Firebase.");
+  }
+
+  const batch = writeBatch(db);
+  orderedIds.forEach((id, index) => {
+    let targetOrder = index;
+    if (id === idA) {
+      targetOrder = indexB;
+    } else if (id === idB) {
+      targetOrder = indexA;
+    }
+    batch.update(doc(db, collectionName, id), { order: targetOrder });
+  });
+  await batch.commit();
+
+  clearStoredCache(cacheKeyMap[collectionName] || collectionName);
 }

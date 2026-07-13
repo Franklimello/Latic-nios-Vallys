@@ -12,7 +12,7 @@ import { useProducts } from "@/hooks/useProducts";
 import { useRecipes } from "@/hooks/useRecipes";
 import { useHighlights } from "@/hooks/useHighlights";
 import ProductCarousel from "@/components/ProductCarousel";
-import { getCategoryStyle, demoHighlights } from "@/interfaces/catalog";
+import { getCategoryStyle, demoHighlights, productCategories } from "@/interfaces/catalog";
 
 // Efeito de digitação real (typewriter) com cursor piscando
 const Typewriter = ({ text, speed = 55, delay = 0, onDone, showCursor = true }) => {
@@ -125,9 +125,12 @@ export default function Home() {
     if (products.length > 0) {
       const initial = {};
       products.forEach((product) => {
-        const cat = product.category || "Outros";
+        let cat = product.category || "Outros";
+        if (cat === "Iogurtes") {
+          cat = "Bebidas Lácteas";
+        }
         if (initial[cat] === undefined) {
-          initial[cat] = cat.toLowerCase().includes("iogurte");
+          initial[cat] = cat.toLowerCase().includes("bebida");
         }
       });
       setExpandedCategories(initial);
@@ -176,7 +179,10 @@ export default function Home() {
   const productsByCategory = useMemo(() => {
     const groups = {};
     products.forEach((product) => {
-      const cat = product.category || "Outros";
+      let cat = product.category || "Outros";
+      if (cat === "Iogurtes") {
+        cat = "Bebidas Lácteas";
+      }
       if (!groups[cat]) {
         groups[cat] = [];
       }
@@ -212,8 +218,7 @@ export default function Home() {
                 className="object-cover"
                 priority
               />
-              {/* Overlay Escuro com gradiente para contraste - somente em desktop */}
-              <div className="hidden md:block absolute inset-0 bg-gradient-to-r from-[#00b1f4]/95 via-[#00b1f4]/60 to-transparent" />
+
             </motion.div>
           </AnimatePresence>
         </div>
@@ -222,13 +227,13 @@ export default function Home() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none z-10" />
 
         {/* Slides Content */}
-        <div className="relative z-10 w-full h-full pt-[20px] md:pt-[40px] pb-16 md:py-24 px-0 md:px-12 lg:px-16 max-w-[1440px] mx-auto flex items-center">
+        <div className="relative z-10 w-full h-full pt-[20px] md:absolute md:inset-0 pb-16 md:pb-24 px-0 md:px-12 lg:px-16 max-w-[1440px] mx-auto flex items-center md:items-end">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentSlide}
-              className="w-full flex flex-col md:grid md:grid-cols-[1.3fr_0.7fr] md:items-center justify-between"
+              className="w-full flex flex-col md:items-start"
             >
-              {/* Coluna Esquerda: Informações e Ação */}
+              {/* Informações e Ação */}
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -268,24 +273,6 @@ export default function Home() {
                   >
                     <Link href="/receitas">Explorar receitas</Link>
                   </Button>
-                </div>
-              </motion.div>
-
-              {/* Coluna Direita: Frase e Slogan de Impacto Rústico */}
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="hidden md:flex w-full justify-center md:justify-end z-10"
-              >
-                <div className="rotate-[2.5deg] border-2 border-dashed border-white/30 p-6 rounded-2xl bg-black/25 backdrop-blur-md shadow-2xl max-w-[280px] text-center md:text-right hover:rotate-0 transition-transform duration-300">
-                  <span className="text-yellow-300 text-xs font-bold uppercase tracking-widest block mb-1">
-                    Destaque
-                  </span>
-                  <h3 className="font-extrabold tracking-tighter uppercase text-white text-3xl sm:text-4xl leading-tight drop-shadow-md">
-                    {slide.textRight}
-                  </h3>
                 </div>
               </motion.div>
             </motion.div>
@@ -366,9 +353,11 @@ export default function Home() {
             </Button>
           </div>
         ) : (
-          Object.entries(productsByCategory).map(([category, items]) => {
-            const isExpanded = !!expandedCategories[category];
-            const style = getCategoryStyle(category);
+          Object.entries(productsByCategory)
+            .filter(([category]) => productCategories.includes(category))
+            .map(([category, items]) => {
+              const isExpanded = !!expandedCategories[category];
+              const style = getCategoryStyle(category);
             return (
               <div key={category} className="mb-16">
                 {/* Category Title & Toggle Button */}

@@ -15,7 +15,10 @@ export default function ProductsPage() {
   const productsByCategory = useMemo(() => {
     const groups = {};
     products.forEach((product) => {
-      const cat = product.category || "Outros";
+      let cat = product.category || "Outros";
+      if (cat === "Iogurtes") {
+        cat = "Bebidas Lácteas";
+      }
       if (!groups[cat]) {
         groups[cat] = [];
       }
@@ -27,9 +30,13 @@ export default function ProductsPage() {
   // Determine what to display based on selected category
   const categoriesToRender = useMemo(() => {
     if (category === "Todos") {
-      return Object.keys(productsByCategory);
+      return Object.keys(productsByCategory).filter((cat) =>
+        productCategories.includes(cat)
+      );
     }
-    return productsByCategory[category] ? [category] : [];
+    return productsByCategory[category] && productCategories.includes(category)
+      ? [category]
+      : [];
   }, [category, productsByCategory]);
 
   return (
@@ -41,7 +48,7 @@ export default function ProductsPage() {
           Nossas Linhas
         </h1>
         <p className="mt-2 max-w-xl text-muted text-sm md:text-base">
-          Conheça todos os nossos queijos, iogurtes, leites, doces e manteigas produzidos com o mais puro sabor da fazenda.
+          Conheça todos os nossos queijos, bebidas lácteas e manteigas produzidos com o mais puro sabor da fazenda.
         </p>
         <div className="mt-4 flex h-[4px] w-[120px] rounded-full overflow-hidden">
           <div className="w-1/2 bg-orange-500"></div>

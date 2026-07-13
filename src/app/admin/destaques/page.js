@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, ChevronUp, ChevronDown } from "lucide-react";
 import AdminGuard from "@/components/AdminGuard";
 import HighlightForm from "@/components/HighlightForm";
 import { Button } from "@/components/ui/button";
@@ -12,12 +12,17 @@ import {
   createHighlight,
   deleteHighlight,
   updateHighlight,
+  swapOrder,
+  reindexOrders,
+  ensurePersisted,
+  initializeAndSwap,
 } from "@/services/firebase";
 
 export default function AdminHighlightsPage() {
   const { highlights, loading, error, reload } = useHighlights();
   const [editing, setEditing] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [reordering, setReordering] = useState(false);
 
   async function saveHighlight(values) {
     setSubmitting(true);
@@ -47,10 +52,51 @@ export default function AdminHighlightsPage() {
 
     try {
       await deleteHighlight(id);
+      // Reindex remaining items
+      const remaining = highlights.filter((h) => h.id !== id);
+      const firestoreIds = remaining.filter((h) => h.createdAt || typeof h.order === "number").map((h) => h.id);
+      if (firestoreIds.length > 0) {
+        await reindexOrders("highlights", firestoreIds);
+      }
       toast.success("Destaque excluído.");
       await reload();
     } catch (requestError) {
       toast.error(requestError.message || "Erro ao excluir destaque.");
+    }
+  }
+
+  async function moveItem(index, direction) {
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= highlights.length) return;
+
+    const itemA = highlights[index];
+    const itemB = highlights[targetIndex];
+
+    setReordering(true);
+    try {
+      const orderA = typeof itemA.order === "number" ? itemA.order : index;
+      const orderB = typeof itemB.order === "number" ? itemB.order : targetIndex;
+
+      // Auto-persist demo items to Firestore before swapping
+      const isFirestoreA = itemA.createdAt || typeof itemA.order === "number";
+      const isFirestoreB = itemB.createdAt || typeof itemB.order === "number";
+
+      if (!isFirestoreA) {
+        await ensurePersisted("highlights", itemA, orderA);
+      }
+      if (!isFirestoreB) {
+        await ensurePersisted("highlights", itemB, orderB);
+      }
+
+      const highlightIds = highlights.map((h) => h.id);
+      await initializeAndSwap("highlights", highlightIds, itemA.id, index, itemB.id, targetIndex);
+
+      toast.success("Ordem atualizada.");
+      await reload();
+    } catch (requestError) {
+      toast.error(requestError.message || "Erro ao reordenar.");
+    } finally {
+      setReordering(false);
     }
   }
 
@@ -76,6 +122,7 @@ export default function AdminHighlightsPage() {
             <h1 className="text-3xl font-semibold">Destaques do Banner</h1>
             <p className="mt-2 text-sm text-muted">
               Gerencie as fotos, títulos e frases rotativas do topo da home page.
+              Use as setas para definir a ordem de exibição.
             </p>
           </div>
 
@@ -83,9 +130,30 @@ export default function AdminHighlightsPage() {
           {error && <p className="text-red-600">{error.message}</p>}
 
           <div className="grid gap-5">
-            {highlights.map((item) => (
+            {highlights.map((item, index) => (
               <Card key={item.id} className="overflow-hidden">
                 <div className="flex flex-col sm:flex-row">
+                  {/* Order Controls */}
+                  <div className="flex sm:flex-col items-center justify-center gap-1 px-3 py-2 sm:py-0 bg-gray-50 border-b sm:border-b-0 sm:border-r border-gray-100 shrink-0">
+                    <span className="text-xs font-bold text-gray-400 sm:mb-1">#{index + 1}</span>
+                    <button
+                      onClick={() => moveItem(index, -1)}
+                      disabled={index === 0 || reordering}
+                      className="p-1 rounded hover:bg-gray-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                      aria-label="Mover para cima"
+                    >
+                      <ChevronUp size={18} className="text-gray-600" />
+                    </button>
+                    <button
+                      onClick={() => moveItem(index, 1)}
+                      disabled={index === highlights.length - 1 || reordering}
+                      className="p-1 rounded hover:bg-gray-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                      aria-label="Mover para baixo"
+                    >
+                      <ChevronDown size={18} className="text-gray-600" />
+                    </button>
+                  </div>
+
                   {/* Image Preview */}
                   <div className="relative w-full sm:w-[200px] h-[120px] bg-gray-50 flex items-center justify-center shrink-0">
                     {item.image ? (
@@ -105,9 +173,6 @@ export default function AdminHighlightsPage() {
                       <div className="flex flex-wrap items-center gap-2 mb-1.5">
                         <span className="px-2 py-0.5 text-[11px] font-bold uppercase bg-amber-100 text-amber-800 rounded">
                           {item.badge}
-                        </span>
-                        <span className="px-2 py-0.5 text-[11px] font-bold uppercase bg-blue-100 text-blue-800 rounded">
-                          {item.textRight}
                         </span>
                       </div>
                       <h3 className="font-bold text-lg text-gray-900 leading-tight">

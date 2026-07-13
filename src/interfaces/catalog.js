@@ -1,8 +1,6 @@
 export const productCategories = [
-  "Leites",
   "Queijos",
-  "Iogurtes",
-  "Doces",
+  "Bebidas Lácteas",
   "Manteigas",
 ];
 
@@ -27,7 +25,7 @@ export const categoryStyles = {
     buttonActive: "border-blue-600 bg-blue-600 text-white shadow-sm",
     cardBg: "bg-blue-600",
   },
-  "Iogurtes": {
+  "Bebidas Lácteas": {
     text: "text-pink-500 group-hover:text-pink-600",
     textStatic: "text-pink-500",
     icon: "text-pink-500 group-hover:text-pink-600",
@@ -60,7 +58,11 @@ export const categoryStyles = {
 };
 
 export function getCategoryStyle(category) {
-  return categoryStyles[category] || {
+  let cat = category;
+  if (cat === "Iogurtes") {
+    cat = "Bebidas Lácteas";
+  }
+  return categoryStyles[cat] || {
     text: "text-amber-500 group-hover:text-amber-600",
     textStatic: "text-amber-500",
     icon: "text-amber-500 group-hover:text-amber-600",
@@ -145,14 +147,6 @@ export const demoHighlights = [
     subtitleLeft: "Bisnaga de 1.8kg",
     textRight: "MAIS SABOR NAS RECEITAS",
     badge: "Qualidade Premium",
-  },
-  {
-    id: "manteiga-com-sal",
-    image: "/hero/img3.jpeg",
-    titleLeft: "Manteiga com Sal",
-    subtitleLeft: "Puro Creme de Leite",
-    textRight: "CREMOSIDADE NO PÃO",
-    badge: "Sabor de Fazenda",
   },
   {
     id: "requeijao-de-pote",
