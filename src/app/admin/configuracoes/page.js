@@ -109,6 +109,25 @@ export default function ConfiguracoesPage() {
 
           <Card>
             <CardContent className="p-6">
+              <h2 className="text-xl font-semibold mb-4">Vídeo Institucional (Página Inicial)</h2>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Link do Vídeo no YouTube</label>
+                <input
+                  type="text"
+                  placeholder="Ex: https://www.youtube.com/watch?v=..."
+                  className="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-[#00b1f4] focus:outline-none transition-colors"
+                  value={formData.homeYoutubeVideo || ""}
+                  onChange={(e) => handleChange("homeYoutubeVideo", e.target.value)}
+                />
+                <p className="text-sm text-muted mt-2">
+                  Cole o link do vídeo do YouTube para exibi-lo na página inicial, abaixo do banner principal. Deixe em branco para ocultar.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
               <h2 className="text-xl font-semibold mb-4">Estilo dos Produtos</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {["style1", "style2", "style3"].map((style, index) => (

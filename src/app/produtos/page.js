@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import ProductCard from "@/components/ProductCard";
 import { Badge } from "@/components/ui/badge";
 import { productCategories, getCategoryStyle } from "@/interfaces/catalog";
 import { useProducts } from "@/hooks/useProducts";
-import ProductCarousel from "@/components/ProductCarousel";
 
 export default function ProductsPage() {
   const [category, setCategory] = useState("Todos");
@@ -96,20 +96,28 @@ export default function ProductsPage() {
               <div key={cat} className="border-b border-gray-50 pb-8 last:border-0 last:pb-0">
                 {/* Section Title */}
                 <div className="flex flex-col items-center text-center mb-6">
+                  <div className="w-24 h-24 relative mb-4 hover:scale-110 transition-transform duration-300">
+                    <Image
+                      src={cat.includes("Queijo") ? "/icons/queijos.png" : cat.includes("Bebida") || cat.includes("Iogurte") ? "/icons/bebidas.png" : cat.includes("Manteiga") ? "/icons/manteigas.png" : "/logo.png"}
+                      alt={`Ícone ${cat}`}
+                      fill
+                      className="object-contain drop-shadow-md"
+                    />
+                  </div>
                   <h3 className={`font-caveat text-4xl font-semibold tracking-wide ${style.textStatic}`}>
                     Linha {cat}
                   </h3>
                   <div className={`w-[100px] h-[1px] mt-2 ${style.lineStatic}`}></div>
                 </div>
 
-                {/* Carousel wrapper */}
-                <ProductCarousel category={cat}>
+                {/* Grid layout wrapper */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 w-full place-items-center sm:place-items-stretch">
                   {items.map((product) => (
-                    <div key={product.id} className="w-[260px] sm:w-[300px] shrink-0 snap-center flex">
+                    <div key={product.id} className="w-full max-w-[320px] sm:max-w-none flex">
                       <ProductCard product={product} />
                     </div>
                   ))}
-                </ProductCarousel>
+                </div>
               </div>
             );
           })}

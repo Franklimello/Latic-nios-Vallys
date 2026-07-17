@@ -116,8 +116,6 @@ export default function Hero({ slides, heroStyle }) {
     return (
       <section 
         className="relative bg-[#00b1f4] overflow-hidden min-h-0 md:min-h-[calc(100vh-96px-6px)] lg:min-h-[calc(100vh-172px)] flex flex-col md:flex-row md:items-center justify-center select-none"
-        onMouseEnter={() => setIsPlaying(false)}
-        onMouseLeave={() => setIsPlaying(true)}
       >
         <div className="w-full relative h-[380px] xs:h-[420px] sm:h-[480px] md:absolute md:inset-0 md:w-full md:h-full z-0 overflow-hidden">
           <AnimatePresence mode="wait">
@@ -187,8 +185,6 @@ export default function Hero({ slides, heroStyle }) {
     return (
       <section 
         className="relative bg-[#f8fafc] overflow-hidden min-h-[500px] md:min-h-[calc(100vh-96px)] flex items-center select-none"
-        onMouseEnter={() => setIsPlaying(false)}
-        onMouseLeave={() => setIsPlaying(true)}
       >
         <div className="absolute inset-0 bg-gradient-to-br from-white via-[#f0f7ff] to-[#e0f2fe] z-0" />
         
@@ -251,8 +247,6 @@ export default function Hero({ slides, heroStyle }) {
   return (
     <section 
       className="relative overflow-hidden min-h-[500px] md:min-h-[calc(100vh-120px)] flex items-center justify-center select-none"
-      onMouseEnter={() => setIsPlaying(false)}
-      onMouseLeave={() => setIsPlaying(true)}
     >
       <div className="absolute inset-0 z-0">
         <AnimatePresence mode="wait">

@@ -107,7 +107,7 @@ export default function ProductCarousel({ children, category }) {
       {/* Carousel Viewport */}
       <div
         ref={scrollRef}
-        className="no-scrollbar flex overflow-x-auto gap-4 sm:gap-6 scroll-smooth snap-x snap-mandatory pt-20 pb-6 px-10 sm:px-6 items-center w-full"
+        className="no-scrollbar flex overflow-x-auto gap-4 sm:gap-6 scroll-smooth snap-x snap-mandatory pt-4 pb-6 px-10 sm:px-6 items-stretch w-full"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {React.Children.map(children, (child, index) => {
@@ -115,10 +115,10 @@ export default function ProductCarousel({ children, category }) {
           return (
             <div
               key={index}
-              className={`transition-all duration-500 ease-out transform ${
+              className={`transition-all duration-500 ease-out ${
                 isCenter 
-                  ? "scale-[1.03] -translate-y-12 opacity-100 z-10" 
-                  : "scale-[0.93] translate-y-3 opacity-70"
+                  ? "opacity-100 z-10" 
+                  : "opacity-70"
               } flex shrink-0`}
             >
               {child}

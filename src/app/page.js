@@ -13,6 +13,7 @@ import { useRecipes } from "@/hooks/useRecipes";
 import { useHighlights } from "@/hooks/useHighlights";
 import { useAboutImages } from "@/hooks/useAboutImages";
 import ProductCarousel from "@/components/ProductCarousel";
+
 import { getCategoryStyle, demoHighlights, productCategories } from "@/interfaces/catalog";
 import { useSettings } from "@/contexts/SettingsContext";
 import Hero from "@/components/Hero";
@@ -75,7 +76,7 @@ export default function Home() {
           cat = "Bebidas Lácteas";
         }
         if (initial[cat] === undefined) {
-          initial[cat] = cat.toLowerCase().includes("bebida");
+          initial[cat] = false;
         }
       });
       setExpandedCategories(initial);
@@ -105,10 +106,40 @@ export default function Home() {
     return groups;
   }, [products]);
 
+  // Extract YouTube ID helper
+  const youtubeVideoId = useMemo(() => {
+    if (!settings?.homeYoutubeVideo) return null;
+    const url = settings.homeYoutubeVideo;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  }, [settings?.homeYoutubeVideo]);
+
   return (
     <div>
       {/* HERO CAROUSEL COMPONENT */}
       <Hero slides={slides} heroStyle={settings?.heroStyle} />
+
+      {/* VÍDEO DO YOUTUBE */}
+      {youtubeVideoId && (
+        <section className="bg-[#f8fafc] py-16 border-b border-gray-100">
+          <div className="mx-auto max-w-5xl px-6 lg:px-8 flex flex-col items-center">
+            <h2 className="text-3xl font-extrabold text-[#7c1421] md:text-4xl uppercase tracking-tight mb-8 text-center">
+              Conheça Nossa História
+            </h2>
+            <div className="w-full relative pt-[56.25%] rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
+              <iframe
+                className="absolute inset-0 w-full h-full"
+                src={`https://www.youtube.com/embed/${youtubeVideoId}`}
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              ></iframe>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* SEÇÃO DE LINHAS DE PRODUTOS */}
       <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
@@ -156,6 +187,14 @@ export default function Home() {
                   className="flex flex-col items-center text-center mb-8 cursor-pointer group select-none"
                   onClick={() => toggleCategory(category)}
                 >
+                  <div className="w-24 h-24 relative mb-4 hover:scale-110 transition-transform duration-300">
+                    <Image
+                      src={category.includes("Queijo") ? "/icons/queijos.png" : category.includes("Bebida") || category.includes("Iogurte") ? "/icons/bebidas.png" : category.includes("Manteiga") ? "/icons/manteigas.png" : "/logo.png"}
+                      alt={`Ícone ${category}`}
+                      fill
+                      className="object-contain drop-shadow-md"
+                    />
+                  </div>
                   <div className="flex items-center gap-2 justify-center">
                     <h3 className={`font-caveat text-4xl font-semibold tracking-wide transition-colors ${style.text}`}>
                       Linha {category}
