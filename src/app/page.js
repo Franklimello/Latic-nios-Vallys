@@ -251,9 +251,10 @@ export default function Home() {
 
       {/* SEÇÃO SOBRE (Resumo Dinâmico) */}
       {(settings?.aboutStyle === "style1" || !settings?.aboutStyle) && (
-      <section className="bg-white border-t border-gray-100 flex flex-col">
+      <section className="flex flex-col w-full relative z-10 overflow-hidden font-sans">
+        
         {/* Carrossel Full-Width */}
-        <div className="w-full relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden bg-gray-100">
+        <div className="w-full relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden bg-[#154687]">
           <AnimatePresence initial={false}>
             <motion.div 
               key={activeAboutImage} 
@@ -273,124 +274,127 @@ export default function Home() {
               />
             </motion.div>
           </AnimatePresence>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#154687] via-transparent to-transparent pointer-events-none" />
         </div>
 
-        {/* Texto Descritivo Centrado */}
-        <div className="mx-auto max-w-4xl px-6 py-20 text-center space-y-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="space-y-4"
-          >
-            <p className="text-sm font-bold uppercase tracking-wider text-amber-500">
-              Quem Somos
-            </p>
-            <h2 className="text-4xl font-extrabold text-[#7c1421] sm:text-5xl uppercase tracking-tight">
-              Laticínios Vallys
+        {/* Header - NOSSA HISTÓRIA */}
+        <div className="bg-[#154687] text-white pt-12 pb-16 relative w-full text-center flex flex-col items-center">
+          <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_2px,transparent_2px)] bg-[size:24px_24px] pointer-events-none" />
+          <div className="relative z-10 flex flex-col items-center space-y-6 px-4">
+            <div className="w-14 h-14 border-2 border-white flex items-center justify-center p-2 mb-2">
+               <Award strokeWidth={1.5} className="w-8 h-8 text-white" />
+            </div>
+            <h2 className="text-5xl md:text-6xl lg:text-7xl font-extrabold uppercase tracking-tight" style={{ fontFamily: '"Arial Rounded MT Bold", "Nunito", sans-serif' }}>
+              Nossa História
             </h2>
-            <div className="h-[4px] w-[80px] bg-[#7c1421] rounded-full mx-auto"></div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="space-y-6 text-lg leading-relaxed text-muted font-medium mx-auto"
-          >
-            <p>
-              {settings?.aboutHistoryText1 || "Fundado em 2007, o Laticínios Vallys vem, desde então, investindo continuamente na modernização de sua estrutura, na inovação de seus processos e na utilização de equipamentos de alta tecnologia. Nosso compromisso é oferecer produtos de excelência, levando aos consumidores qualidade, sabor e confiança em cada produto."}
-            </p>
-            <p>
-              {settings?.aboutHistoryText2 || "Temos orgulho de fazer parte da história de Lajinha (MG), contribuindo para o desenvolvimento da região e consolidando nossa marca como referência no setor de laticínios."}
-            </p>
-          </motion.div>
-
-          {/* Destaques rápidos */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="grid grid-cols-3 gap-8 pt-8 border-t border-gray-100 max-w-2xl mx-auto"
-          >
-            <div className="text-center">
-              <span className="block text-3xl md:text-4xl font-extrabold text-[#00b1f4]">2007</span>
-              <span className="text-xs md:text-sm text-muted font-bold uppercase tracking-wider">Fundação</span>
-            </div>
-            <div className="text-center">
-              <span className="block text-3xl md:text-4xl font-extrabold text-[#00b1f4]">Lajinha</span>
-              <span className="text-xs md:text-sm text-muted font-bold uppercase tracking-wider">Origem (MG)</span>
-            </div>
-            <div className="text-center">
-              <span className="block text-3xl md:text-4xl font-extrabold text-[#00b1f4]">100%</span>
-              <span className="text-xs md:text-sm text-muted font-bold uppercase tracking-wider">Qualidade</span>
-            </div>
-          </motion.div>
+          </div>
+        </div>
+        
+        {/* WAVE DOWN TO WHITE */}
+        <div className="w-full relative z-20 -mt-1 -mb-1">
+          <svg viewBox="0 0 1440 120" className="w-full h-12 md:h-24 text-white block fill-current" preserveAspectRatio="none">
+             <path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
+          </svg>
         </div>
 
-          {/* Missão, Visão e Valores */}
-          <div className="mx-auto max-w-7xl px-6 pb-20 lg:px-8">
-            <div className="pt-16 border-t border-gray-100 grid gap-12 md:grid-cols-3">
-            {/* Card Missão */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="flex flex-col items-center text-center space-y-4"
-            >
-              <div className="inline-flex items-center justify-center p-4 bg-amber-500/10 rounded-full text-amber-500 transition-transform duration-300 hover:scale-110">
-                <Target size={24} />
-              </div>
-              <h3 className="font-caveat text-4xl font-bold text-[#7c1421] tracking-wide">
-                Missão
+        {/* WHITE MIDDLE SECTION */}
+        <div className="bg-white px-6 py-16 md:py-24 text-[#0f376f] relative z-10">
+          <div className="max-w-4xl mx-auto space-y-12">
+            <p className="text-xl md:text-2xl leading-relaxed text-center font-semibold">
+              Há mais de uma década escrevemos nossa história com qualidade. Somos mais de:
+            </p>
+            <ul className="space-y-6 text-lg md:text-xl font-medium mx-auto flex flex-col items-start max-w-2xl">
+              <li className="flex items-center gap-4">
+                <span className="text-[#154687] font-bold">-</span>
+                Fundação em 2007
+              </li>
+              <li className="flex items-center gap-4">
+                <span className="text-[#154687] font-bold">-</span>
+                Origem em Lajinha (MG)
+              </li>
+              <li className="flex items-center gap-4">
+                <span className="text-[#154687] font-bold">-</span>
+                Investimento contínuo na modernização e inovação
+              </li>
+              <li className="flex items-center gap-4">
+                <span className="text-[#154687] font-bold">-</span>
+                Equipamentos de alta tecnologia
+              </li>
+              <li className="flex items-center gap-4">
+                <span className="text-[#154687] font-bold">-</span>
+                Produtos de excelência com sabor e confiança
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* WAVE DOWN TO BLUE */}
+        <div className="w-full relative z-20 -mt-1 -mb-1">
+          <svg viewBox="0 0 1440 120" className="w-full h-12 md:h-24 text-[#154687] block fill-current" preserveAspectRatio="none">
+             <path d="M0,64L80,53.3C160,43,320,21,480,26.7C640,32,800,64,960,74.7C1120,85,1280,75,1360,69.3L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
+          </svg>
+        </div>
+
+        {/* BLUE BOTTOM SECTION: Missao/Visao/Valores */}
+        <div className="bg-[#154687] text-white px-6 py-20 md:py-32 relative w-full flex flex-col items-center">
+          <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_2px,transparent_2px)] bg-[size:24px_24px] pointer-events-none" />
+          
+          <div className="relative z-10 max-w-3xl w-full flex flex-col items-center space-y-16">
+            
+            {/* MISSÃO */}
+            <div className="w-full border-[4px] border-white p-12 flex flex-col items-center text-center">
+              <h3 className="text-4xl md:text-5xl font-extrabold uppercase mb-6 tracking-wide leading-tight" style={{ fontFamily: '"Arial Rounded MT Bold", "Nunito", sans-serif' }}>
+                Nossa<br />Missão
               </h3>
-              <p className="text-sm leading-relaxed text-muted font-medium max-w-sm">
+              <div className="w-12 h-2.5 bg-white mb-8"></div>
+              <p className="text-lg md:text-xl font-semibold leading-relaxed max-w-xl">
                 Produzir alimentos lácteos de excelência, segurança e qualidade, proporcionando sabor e confiança aos nossos consumidores em cada experiência.
               </p>
-            </motion.div>
+            </div>
 
-            {/* Card Visão */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="flex flex-col items-center text-center space-y-4"
-            >
-              <div className="inline-flex items-center justify-center p-4 bg-blue-500/10 rounded-full text-blue-500 transition-transform duration-300 hover:scale-110">
-                <Eye size={24} />
-              </div>
-              <h3 className="font-caveat text-4xl font-bold text-[#7c1421] tracking-wide">
-                Visão
+            {/* VISÃO */}
+            <div className="w-full border-[4px] border-white p-12 flex flex-col items-center text-center">
+              <h3 className="text-4xl md:text-5xl font-extrabold uppercase mb-6 tracking-wide leading-tight" style={{ fontFamily: '"Arial Rounded MT Bold", "Nunito", sans-serif' }}>
+                Nossa<br />Visão
               </h3>
-              <p className="text-sm leading-relaxed text-muted font-medium max-w-sm">
+              <div className="w-12 h-2.5 bg-white mb-8"></div>
+              <p className="text-lg md:text-xl font-semibold leading-relaxed max-w-xl">
                 Ser referência no setor de laticínios pela qualidade dos produtos, inovação contínua e valorização de colaboradores e parceiros.
               </p>
-            </motion.div>
+            </div>
 
-            {/* Card Valores */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="flex flex-col items-center text-center space-y-4"
-            >
-              <div className="inline-flex items-center justify-center p-4 bg-[#00b1f4]/10 rounded-full text-[#00b1f4] transition-transform duration-300 hover:scale-110">
-                <Award size={24} />
-              </div>
-              <h3 className="font-caveat text-4xl font-bold text-[#7c1421] tracking-wide">
-                Valores
+            {/* VALORES */}
+            <div className="w-full border-[4px] border-white p-12 flex flex-col items-center text-center">
+              <h3 className="text-4xl md:text-5xl font-extrabold uppercase mb-6 tracking-wide leading-tight" style={{ fontFamily: '"Arial Rounded MT Bold", "Nunito", sans-serif' }}>
+                Nossos<br />Valores
               </h3>
-              <p className="text-sm leading-relaxed text-muted font-medium max-w-sm">
-                Garantia de qualidade, ética nas relações, inovação, sustentabilidade e valorização dos produtores rurais e colaboradores.
-              </p>
-            </motion.div>
+              <div className="w-12 h-2.5 bg-white mb-8"></div>
+              <div className="text-lg md:text-xl font-semibold leading-loose flex flex-col gap-2">
+                <span>Garantia de Qualidade</span>
+                <span>Ética nas Relações</span>
+                <span>Inovação Contínua</span>
+                <span>Sustentabilidade</span>
+                <span>Valorização dos Produtores</span>
+              </div>
+            </div>
+            
+            {/* BIG NUMBER "2007" */}
+            <div className="pt-24 pb-8 flex flex-col items-center w-full relative">
+               <h1 className="text-[140px] sm:text-[180px] md:text-[240px] leading-none font-black text-[#00b1f4] tracking-tighter drop-shadow-lg" style={{ fontFamily: '"Arial Rounded MT Bold", "Nunito", sans-serif' }}>
+                 2007
+               </h1>
+               <div className="absolute bottom-8 sm:bottom-12 md:bottom-20 w-full flex flex-col items-center">
+                 <div className="border border-white/40 bg-[#154687]/80 backdrop-blur-sm px-6 py-3 rounded-lg mb-2">
+                   <h2 className="text-2xl md:text-4xl font-bold uppercase tracking-widest text-white">
+                     Laticínios Vallys
+                   </h2>
+                 </div>
+                 <p className="mt-2 text-sm md:text-base font-bold tracking-widest uppercase text-white">
+                   Lajinha, Minas Gerais
+                 </p>
+               </div>
+            </div>
+
           </div>
         </div>
       </section>
